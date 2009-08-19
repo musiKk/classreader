@@ -1,0 +1,139 @@
+# Enerjy Software baseline data (files=25, problems=113).
+path: /Classreader/src/classreader/ClassFile.java
+problem: JAVA0100:JAVA0100 Class contains 20 non-final fields (maximum: 8)
+problem: JAVA0136:JAVA0136 38 methods defined in class 'ClassFile' (maximum: 20)
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0116:JAVA0116 Missing javadoc: field 'ACC_PUBLIC'
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0116:JAVA0116 Missing javadoc: field 'ACC_FINAL'
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0116:JAVA0116 Missing javadoc: field 'ACC_SUPER'
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0116:JAVA0116 Missing javadoc: field 'ACC_INTERFACE'
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0116:JAVA0116 Missing javadoc: field 'ACC_ABSTRACT'
+problem: JAVA0020:JAVA0020 Field name '_public' does not have required form: (<uppercase>|<lowercase>)(<uppercase>|<lowercase>|<underscore>|<digit>)*
+problem: JAVA0020:JAVA0020 Field name '_final' does not have required form: (<uppercase>|<lowercase>)(<uppercase>|<lowercase>|<underscore>|<digit>)*
+problem: JAVA0020:JAVA0020 Field name '_super' does not have required form: (<uppercase>|<lowercase>)(<uppercase>|<lowercase>|<underscore>|<digit>)*
+problem: JAVA0020:JAVA0020 Field name '_interface' does not have required form: (<uppercase>|<lowercase>)(<uppercase>|<lowercase>|<underscore>|<digit>)*
+problem: JAVA0020:JAVA0020 Field name '_abstract' does not have required form: (<uppercase>|<lowercase>)(<uppercase>|<lowercase>|<underscore>|<digit>)*
+problem: JAVA0139:JAVA0139 Definition of main other than public static void main(java.lang.String[])
+problem: JAVA0173:JAVA0173 Unused method parameter 'args'
+path: /Classreader/src/classreader/ClassReaderImpl.java
+problem: JAVA0076:JAVA0076 Use of magic number '8'
+problem: JAVA0076:JAVA0076 Use of magic number '0xFF'
+problem: JAVA0076:JAVA0076 Use of magic number '8'
+problem: JAVA0076:JAVA0076 Use of magic number '8'
+problem: JAVA0264:JAVA0264 Integer math in long context - check for overflow
+problem: JAVA0076:JAVA0076 Use of magic number '0xFF'
+problem: JAVA0076:JAVA0076 Use of magic number '8'
+path: /Classreader/src/classreader/Test.java
+problem: JAVA0106:JAVA0106 Unnecessary import from current package 'classreader.ClassReader'
+problem: JAVA0106:JAVA0106 Unnecessary import from current package 'classreader.ClassReaderImpl'
+problem: JAVA0014:JAVA0014 Class 'Test' with only static members has non-private constructor
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0116:JAVA0116 Missing javadoc: field 'FOO'
+problem: JAVA0139:JAVA0139 Definition of main other than public static void main(java.lang.String[])
+problem: JAVA0173:JAVA0173 Unused method parameter 'args'
+path: /Classreader/src/classreader/attributes/AttributeInfo.java
+problem: JAVA0137:JAVA0137 Non-abstract class 'AttributeInfo' missing constructor
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0116:JAVA0116 Missing javadoc: field 'CONSTANT_VALUE_NAME'
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0116:JAVA0116 Missing javadoc: field 'CODE_NAME'
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0116:JAVA0116 Missing javadoc: field 'EXCEPTIONS_NAME'
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0116:JAVA0116 Missing javadoc: field 'SOURCE_FILE_NAME'
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0116:JAVA0116 Missing javadoc: field 'INNER_CLASSES_NAME'
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0116:JAVA0116 Missing javadoc: field 'SYNTHETIC_NAME'
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0116:JAVA0116 Missing javadoc: field 'LINE_NUMBER_TABLE_NAME'
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0116:JAVA0116 Missing javadoc: field 'LOCAL_VARIABLE_TABLE_NAME'
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0116:JAVA0116 Missing javadoc: field 'DEPRECATED_NAME'
+path: /Classreader/src/classreader/attributes/Code.java
+problem: JAVA0166:JAVA0166 Generic exception 'java.lang.Throwable' caught
+path: /Classreader/src/classreader/attributes/CodeAttribute.java
+problem: JAVA0173:JAVA0173 Unused method parameter 'attributeLength'
+path: /Classreader/src/classreader/attributes/ExceptionAttribute.java
+problem: JAVA0173:JAVA0173 Unused method parameter 'attributeLength'
+path: /Classreader/src/classreader/attributes/InnerClassesAttribute.java
+problem: JAVA0173:JAVA0173 Unused method parameter 'attributeLength'
+path: /Classreader/src/classreader/attributes/LineNumberTableAttribute.java
+problem: JAVA0173:JAVA0173 Unused method parameter 'attributeLength'
+path: /Classreader/src/classreader/attributes/LocalVariableTableAttribute.java
+problem: JAVA0173:JAVA0173 Unused method parameter 'attributeLength'
+path: /Classreader/src/classreader/attributes/SourceFileAttribute.java
+problem: JAVA0173:JAVA0173 Unused method parameter 'attributeLength'
+problem: JAVA0173:JAVA0173 Unused method parameter 'constantPool'
+path: /Classreader/src/classreader/attributes/SyntheticAttribute.java
+problem: JAVA0062:JAVA0062 Public class 'SyntheticAttribute' missing public member or protected constructor
+path: /Classreader/src/classreader/constantpool/ConstantFieldrefInfo.java
+problem: JAVA0058:JAVA0058 Constructor 'ConstantFieldrefInfo' calls super()
+path: /Classreader/src/classreader/constantpool/ConstantMethodrefInfo.java
+problem: JAVA0058:JAVA0058 Constructor 'ConstantMethodrefInfo' calls super()
+path: /Classreader/src/classreader/constantpool/ConstantPool.java
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0116:JAVA0116 Missing javadoc: field 'CONSTANT_Class'
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0116:JAVA0116 Missing javadoc: field 'CONSTANT_Fieldref'
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0116:JAVA0116 Missing javadoc: field 'CONSTANT_Methodref'
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0116:JAVA0116 Missing javadoc: field 'CONSTANT_InterfaceMethodref'
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0116:JAVA0116 Missing javadoc: field 'CONSTANT_String'
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0116:JAVA0116 Missing javadoc: field 'CONSTANT_Integer'
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0116:JAVA0116 Missing javadoc: field 'CONSTANT_Float'
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0116:JAVA0116 Missing javadoc: field 'CONSTANT_Long'
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0116:JAVA0116 Missing javadoc: field 'CONSTANT_Double'
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0116:JAVA0116 Missing javadoc: field 'CONSTANT_NameAndType'
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0116:JAVA0116 Missing javadoc: field 'CONSTANT_Utf8'
+problem: JAVA0040:JAVA0040 Switch statement contains 12 cases (maximum: 10)
+path: /Classreader/src/classreader/constantpool/ConstantPoolInfo.java
+problem: JAVA0011:JAVA0011 Abstract class 'ConstantPoolInfo' does not contain an abstract method
+path: /Classreader/src/classreader/constantpool/DoubleInfo.java
+problem: JAVA0058:JAVA0058 Constructor 'DoubleInfo' calls super()
+path: /Classreader/src/classreader/constantpool/InterfaceMethodrefInfo.java
+problem: JAVA0058:JAVA0058 Constructor 'InterfaceMethodrefInfo' calls super()
+path: /Classreader/src/classreader/constantpool/LongInfo.java
+problem: JAVA0058:JAVA0058 Constructor 'LongInfo' calls super()
+path: /Classreader/src/classreader/constantpool/StringInfo.java
+problem: JAVA0058:JAVA0058 Constructor 'StringInfo' calls super()
+path: /Classreader/src/classreader/constantpool/Utf8Info.java
+problem: JAVA0058:JAVA0058 Constructor 'Utf8Info' calls super()
+path: /Classreader/src/classreader/fields/FieldInfo.java
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+path: /Classreader/src/classreader/instructions/Instruction.java
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0166:JAVA0166 Generic exception 'java.lang.Exception' caught
+path: /Classreader/src/classreader/methods/MethodInfo.java
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+problem: JAVA0068:JAVA0068 Modifiers not declared in recommended order
+path: /Classreader/src/classreader/util/StreamUtils.java
+problem: JAVA0011:JAVA0011 Abstract class 'StreamUtils' does not contain an abstract method
+problem: JAVA0014:JAVA0014 Class 'StreamUtils' with only static members has non-private constructor
