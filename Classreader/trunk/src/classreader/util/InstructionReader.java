@@ -170,7 +170,7 @@ public class InstructionReader {
 
 				List<Operand> operands = new ArrayList<Operand>();
 
-				int affectedOpcode = classReader.readByteAsInt();
+				int affectedOpcode = classReader.readUnsignedByte();
 
 				int index = classReader.readShort();
 
@@ -275,32 +275,37 @@ public class InstructionReader {
 			ClassReader classReader) {
 
 		int value = 0;
+		char typeChar = type.charAt(0);
 
-		if (type.equals("b")) {
-			value = classReader.readByteAsInt();
-		} else if (type.equals("s")) {
+		switch (typeChar) {
+		case 'b':
+			value = classReader.readByte();
+			break;
+		case 'B':
+			value = classReader.readUnsignedByte();
+			break;
+		case 's':
 			value = classReader.readShort();
-		} else if (type.equals("i")) {
+			break;
+		case 'S':
+			value = classReader.readUnsignedShort();
+			break;
+		case 'i':
 			value = classReader.readInt();
-		} else if (type.equals("c")) {
-			value = classReader.readByteAsInt();
-			if (value != Integer.parseInt(name)) {
+			break;
+		case 'c':
+		case 'C':
+			if (classReader.readByte() != Integer.parseInt(name)) {
 				throw new RuntimeException("expected constant value " + name
 						+ " but found " + value + " instead");
 			}
 			return null;
+		default:
+			throw new RuntimeException("unexpected type: " + type);
 		}
 
 		return new Operand(name, value);
 
-	}
-
-	public static void main(String[] args) {
-		Map<Integer, InstructionFactory> factories = InstructionReader
-				.loadInstructionFactories();
-		for (Integer i : factories.keySet()) {
-			System.out.println(factories.get(i));
-		}
 	}
 
 }

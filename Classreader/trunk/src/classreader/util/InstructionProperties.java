@@ -58,7 +58,14 @@ public class InstructionProperties extends Properties implements
 				+ "names";
 	}
 
+	/**
+	 * The current index for the {@link Iterator}.
+	 */
 	private int currentIndex;
+
+	/**
+	 * The maximum allowed index.
+	 */
 	private final int maxIndex;
 
 	public InstructionProperties() {
@@ -90,7 +97,29 @@ public class InstructionProperties extends Properties implements
 		return getInstructionProperty(currentIndex++);
 	}
 
+	/**
+	 * Returns the {@link InstructionProperty} with the given index from the
+	 * {@link Properties} file. <b>Unlike with arrays or {@code List}s the index
+	 * is one-based!</b>
+	 * 
+	 * @param index
+	 *            the index of the requested {@code InstructionProperty}
+	 * @return the {@code InstructionProperty}
+	 * @throws IllegalArgumentException
+	 *             if index is less than one or greater than the maximum allowed
+	 *             value
+	 */
 	public InstructionProperty getInstructionProperty(int index) {
+
+		if (index > maxIndex) {
+			throw new IllegalArgumentException(
+					"requested instruction with index " + index
+							+ " but maximum allowed value is " + maxIndex);
+		}
+		if (index < 1) {
+			throw new IllegalArgumentException(
+					"index must be greater or equal to 1 but was " + index);
+		}
 
 		int opcode = getOpcode(getProperty(String.format(
 				INSTRUCTION_OPCODE_KEY, index)));
@@ -116,6 +145,15 @@ public class InstructionProperties extends Properties implements
 
 	}
 
+	/**
+	 * Extracts the size from the property of the {@code
+	 * instructions.properties} file.
+	 * 
+	 * @param sizeString
+	 *            the size, possibly {@code null} or the character {@code 'v'}
+	 * @return the size if {@code sizeString} is a number, 1 if {@code null} and
+	 *         -1 if {@code 'v'}
+	 */
 	private int getSize(String sizeString) {
 
 		if (sizeString == null) {
@@ -129,6 +167,14 @@ public class InstructionProperties extends Properties implements
 
 	}
 
+	/**
+	 * Convert the {@code String} of a number possibly prefixed by the
+	 * characters {@code '0x'} denoting a base 16 number.
+	 * 
+	 * @param opcodeString
+	 *            the number as a {@code String}
+	 * @return the number
+	 */
 	private static int getOpcode(String opcodeString) {
 
 		if (opcodeString.startsWith("0x")) {

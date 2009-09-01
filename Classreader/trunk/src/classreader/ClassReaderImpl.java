@@ -94,6 +94,11 @@ public class ClassReaderImpl implements ClassReader {
 	}
 
 	@Override
+	public long readUnsignedInt() {
+		return readInt() & 0xFFFFFFFFL;
+	}
+
+	@Override
 	public long readLong() {
 		byte[] buffer = new byte[8];
 		readBytesFully(buffer);
@@ -106,10 +111,15 @@ public class ClassReaderImpl implements ClassReader {
 	}
 
 	@Override
-	public int readShort() {
+	public short readShort() {
 		byte b1 = readByte();
 		byte b2 = readByte();
-		return ((b1 << 8) + b2);
+		return (short) ((b1 << 8) + b2);
+	}
+
+	@Override
+	public int readUnsignedShort() {
+		return readShort() & 0xFFFF;
 	}
 
 	@Override
@@ -145,8 +155,8 @@ public class ClassReaderImpl implements ClassReader {
 	}
 
 	@Override
-	public int readByteAsInt() {
-		return readByte() & 0xFF;
+	public short readUnsignedByte() {
+		return (short) (readByte() & 0xFF);
 	}
 
 	@Override

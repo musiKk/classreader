@@ -29,34 +29,83 @@ package classreader;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.SortedMap;
 
 import classreader.attributes.AttributeInfo;
 import classreader.attributes.Attributes;
+import classreader.attributes.Code;
+import classreader.attributes.CodeAttribute;
 import classreader.constantpool.ConstantPool;
 import classreader.constantpool.Utf8Info;
 import classreader.fields.FieldInfo;
 import classreader.fields.Fields;
+import classreader.instructions.Instruction;
 import classreader.methods.MethodInfo;
 import classreader.methods.Methods;
 
+/**
+ * 
+ * This class represents a class file conforming to the <a href=
+ * "http://java.sun.com/docs/books/jvms/second_edition/html/VMSpecTOC.doc.html"
+ * >Java Virtual Machine Specification</a>. It provides methods for every aspect
+ * a class file has to offer.
+ * 
+ * @author Werner hahn
+ * 
+ */
 public class ClassFile {
 
+	/**
+	 * Bitmask for visibility modifier <i>public</i>.
+	 */
 	public static final int ACC_PUBLIC = 0x0001;
+	/**
+	 * Bitmask for modifier <i>final</i>.
+	 */
 	public static final int ACC_FINAL = 0x0010;
+	/**
+	 * Bitmask for special modifier <i>super</i>.
+	 */
 	public static final int ACC_SUPER = 0x0020;
+	/**
+	 * Bitmask for <i>interface</i> modifier.
+	 */
 	public static final int ACC_INTERFACE = 0x0200;
+	/**
+	 * Bitmask for modifier <i>abstract</i>.
+	 */
 	public static final int ACC_ABSTRACT = 0x0400;
 
+	/**
+	 * The {@link ClassReader} used to read the contents of the file.
+	 */
 	private final ClassReader classReader;
 
-	private int magic = 0;
+	/**
+	 * The magic number of the file. Must be <code>0xCAFEBABE</code>.
+	 */
+	private int magic;
 
+	/**
+	 * Minor version number.
+	 */
 	private int minor;
+	/**
+	 * Major version number.
+	 */
 	private int major;
 
+	/**
+	 * The number of constants as read in the file. The actual number of
+	 * constants is one less.
+	 */
 	private int constantPoolCount;
+	/**
+	 * The {@link ConstantPool} of this class file.
+	 */
 	private ConstantPool constantPool;
 
 	private boolean _public;
@@ -65,26 +114,67 @@ public class ClassFile {
 	private boolean _interface;
 	private boolean _abstract;
 
+	/**
+	 * The index of the name of this class in the {@link ClassFile#constantPool
+	 * ConstantPool}.
+	 */
 	private int thisClassIndex;
+	/**
+	 * The index of the name of the super class in the
+	 * {@link ClassFile#constantPool ConstantPool}.
+	 */
 	private int superClassIndex;
 
+	/**
+	 * The number of interfaces this class implements.
+	 */
 	private int interfacesCount;
+	/**
+	 * The interfaces this class implements.
+	 */
 	private Interfaces interfaces;
 
+	/**
+	 * The number of fields of this class.
+	 */
 	private int fieldsCount;
+	/**
+	 * The fields of this class.
+	 */
 	private Fields fields;
 
+	/**
+	 * The number of methods of this class.
+	 */
 	private int methodsCount;
+	/**
+	 * The methods of this class.
+	 */
 	private Methods methods;
 
+	/**
+	 * The number of attributes of this class.
+	 */
 	private int attributesCount;
+	/**
+	 * The attributes of this class.
+	 */
 	private Attributes attributes;
 
+	/**
+	 * Create a <code>ClassFile</code> from the given stream.
+	 * 
+	 * @param is
+	 *            an <code>InputStream</code> referring to the class.
+	 */
 	public ClassFile(InputStream is) {
 		this.classReader = new ClassReaderImpl(is);
 		parseFile();
 	}
 
+	/**
+	 * Starts the parsing process. Just a bunch of delegates.
+	 */
 	private void parseFile() {
 
 		readMagic();
@@ -93,7 +183,7 @@ public class ClassFile {
 		readConstantPoolCount();
 		readConstantPool();
 		classReader.setConstantPool(this.constantPool);
-		readAccessFlags();
+		readFlags();
 		readThisClassIndex();
 		readSuperClassIndex();
 		readInterfacesCount();
@@ -149,7 +239,10 @@ public class ClassFile {
 		this.thisClassIndex = classReader.readShort();
 	}
 
-	private void readAccessFlags() {
+	/**
+	 * Reads and assigns the flags for this class.
+	 */
+	private void readFlags() {
 		int accessFlags = classReader.readShort();
 		this._public = ((accessFlags & ACC_PUBLIC) != 0);
 		this._final = ((accessFlags & ACC_FINAL) != 0);
@@ -255,7 +348,19 @@ public class ClassFile {
 		return attributes;
 	}
 
-	public static void main(String[] args) throws Exception {
+	/**
+	 * A simple {@code main} method to test the Classreader library. It reads a
+	 * single class file and dumps a few statistics to standard output.
+	 * 
+	 * @param args
+	 *            the first element of this array is treated as a path to a
+	 *            class file, the rest is ignored
+	 * @throws FileNotFoundException
+	 *             if the path does not point to an existing file
+	 * @throws NullPointerException
+	 *             if no argument is provided
+	 */
+	public static void main(String[] args) throws FileNotFoundException {
 
 		String classFilePath = args[0];
 
@@ -338,11 +443,24 @@ public class ClassFile {
 			Attributes attributes = mi.getAttributes();
 			for (AttributeInfo ai : attributes.getAttributeInfos()) {
 				int attributeNameIndex = ai.getAttributeNameIndex();
+				String name = ((Utf8Info) cp
+						.getConstantPoolInfo(attributeNameIndex)).getValue();
 				System.out.printf("    name: %d (%s)%n", attributeNameIndex,
-						((Utf8Info) cp.getConstantPoolInfo(attributeNameIndex))
-								.getValue());
+						name);
 				System.out.printf("    info: %s%n", Arrays.toString(ai
 						.getInfo()));
+
+				if ("Code".equals(name)) {
+					CodeAttribute codeAttribute = (CodeAttribute) ai;
+					Code code = codeAttribute.getCode();
+					SortedMap<Integer, Instruction> instructions = code
+							.getInstructions();
+					for (Integer byteOffset : instructions.keySet()) {
+						System.out.printf("    %4d: %s%n", byteOffset,
+								instructions.get(byteOffset).toString());
+					}
+				}
+
 				System.out.println();
 			}
 

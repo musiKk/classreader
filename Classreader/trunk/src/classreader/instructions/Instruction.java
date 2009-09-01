@@ -75,7 +75,7 @@ public class Instruction {
 
 		int opcode = -1;
 		try {
-			opcode = classReader.readByteAsInt();
+			opcode = classReader.readUnsignedByte();
 		} catch (RuntimeException e) {
 			return null;
 		}
