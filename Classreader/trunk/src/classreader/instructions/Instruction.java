@@ -83,7 +83,7 @@ public class Instruction {
 				.get(Integer.valueOf(opcode));
 
 		if (instructionFactory == null) {
-			throw new RuntimeException(String.format("illegal opcode: %x",
+			throw new RuntimeException(String.format("illegal opcode: 0x%x",
 					opcode));
 		}
 

@@ -96,9 +96,11 @@ public class ConstantPool {
 				break;
 			case CONSTANT_Long:
 				cpi = ConstantPoolInfo.createLongInfo(classStream);
+				i++;
 				break;
 			case CONSTANT_Double:
 				cpi = ConstantPoolInfo.createDoubleInfo(classStream);
+				i++;
 				break;
 			case CONSTANT_NameAndType:
 				cpi = ConstantPoolInfo.createNameAndTypeInfo(classStream);

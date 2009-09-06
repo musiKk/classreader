@@ -24,29 +24,24 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package classreader.instructions;
+package classreader;
 
-import classreader.ClassReader;
+import java.io.File;
 
-/**
- * An instruction factory creates instructions. Every type of instruction has
- * its own instruction factory and every instruction factory produces only one
- * type of instructions.
- * 
- * @author whahn
- * 
- */
-public interface InstructionFactory {
+public enum ClassFileJarMode {
 
 	/**
-	 * This is the factory method that creates an instruction. An
-	 * <code>InstructionFactory</code> must not read more bytes from the
-	 * {@link ClassReader} than it needs.
-	 * 
-	 * @param classReader
-	 *            the {@link ClassReader} instance for the current code.
-	 * @return the built {@link Instruction}
+	 * Loads a JAR {@link File} completely. This is useful for situations in
+	 * which random access to a JAR is not feasable e.g. network connections.
+	 * Keep in mind that this operation might be very memory intensive depending
+	 * on the size of the JAR.
 	 */
-	Instruction getInstruction(ClassReader classReader);
+	EAGER,
+	/**
+	 * Loads a JAR {@link File} lazily. Every class is looked up as it is
+	 * needed. This is the default mode and recommended for every locally
+	 * available JAR.
+	 */
+	LAZY
 
 }

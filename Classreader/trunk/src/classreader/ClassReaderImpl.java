@@ -79,6 +79,8 @@ public class ClassReaderImpl implements ClassReader {
 			}
 		}
 
+		position += length;
+
 	}
 
 	@Override
@@ -112,14 +114,16 @@ public class ClassReaderImpl implements ClassReader {
 
 	@Override
 	public short readShort() {
-		byte b1 = readByte();
-		byte b2 = readByte();
+		short b1 = readUnsignedByte();
+		short b2 = readUnsignedByte();
 		return (short) ((b1 << 8) + b2);
 	}
 
 	@Override
 	public int readUnsignedShort() {
-		return readShort() & 0xFFFF;
+		short b1 = readUnsignedByte();
+		short b2 = readUnsignedByte();
+		return ((b1 << 8) + (b2 << 0));
 	}
 
 	@Override

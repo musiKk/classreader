@@ -24,29 +24,45 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package classreader.instructions;
+package classreader;
 
-import classreader.ClassReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
-/**
- * An instruction factory creates instructions. Every type of instruction has
- * its own instruction factory and every instruction factory produces only one
- * type of instructions.
- * 
- * @author whahn
- * 
- */
-public interface InstructionFactory {
+public class LazyClassFileJar extends ClassFileCollection {
 
-	/**
-	 * This is the factory method that creates an instruction. An
-	 * <code>InstructionFactory</code> must not read more bytes from the
-	 * {@link ClassReader} than it needs.
-	 * 
-	 * @param classReader
-	 *            the {@link ClassReader} instance for the current code.
-	 * @return the built {@link Instruction}
-	 */
-	Instruction getInstruction(ClassReader classReader);
+	private final File jarFile;
+
+	public LazyClassFileJar(File jarFile) {
+		this.jarFile = jarFile;
+	}
+
+	@Override
+	public ClassFile getClassFile(String className) {
+
+		String entryName = convertClassNameToEntry(className);
+		ZipEntry entry = new ZipEntry(entryName);
+
+		try {
+			ZipFile zipFile = new ZipFile(jarFile);
+			InputStream is = zipFile.getInputStream(entry);
+			if (is == null) {
+				return null;
+			}
+			ClassFile cf = new ClassFile(is);
+			is.close();
+			return cf;
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+
+	}
+
+	private static String convertClassNameToEntry(String className) {
+		return className.replace('.', '/').concat(".class");
+	}
 
 }

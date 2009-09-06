@@ -203,7 +203,7 @@ public class ClassFile {
 	}
 
 	private void readAttributesCount() {
-		this.attributesCount = classReader.readShort();
+		this.attributesCount = classReader.readUnsignedShort();
 	}
 
 	private void readMethods() {
@@ -211,7 +211,7 @@ public class ClassFile {
 	}
 
 	private void readMethodsCount() {
-		this.methodsCount = classReader.readShort();
+		this.methodsCount = classReader.readUnsignedShort();
 	}
 
 	private void readFields() {
@@ -219,7 +219,7 @@ public class ClassFile {
 	}
 
 	private void readFieldsCount() {
-		this.fieldsCount = classReader.readShort();
+		this.fieldsCount = classReader.readUnsignedShort();
 	}
 
 	private void readInterfaces() {
@@ -228,15 +228,15 @@ public class ClassFile {
 	}
 
 	private void readInterfacesCount() {
-		this.interfacesCount = classReader.readShort();
+		this.interfacesCount = classReader.readUnsignedShort();
 	}
 
 	private void readSuperClassIndex() {
-		this.superClassIndex = classReader.readShort();
+		this.superClassIndex = classReader.readUnsignedShort();
 	}
 
 	private void readThisClassIndex() {
-		this.thisClassIndex = classReader.readShort();
+		this.thisClassIndex = classReader.readUnsignedShort();
 	}
 
 	/**
@@ -257,19 +257,23 @@ public class ClassFile {
 	}
 
 	private void readConstantPoolCount() {
-		constantPoolCount = classReader.readShort();
+		constantPoolCount = classReader.readUnsignedShort();
 	}
 
 	private void readMinor() {
-		minor = classReader.readShort();
+		minor = classReader.readUnsignedShort();
 	}
 
 	private void readMajor() {
-		major = classReader.readShort();
+		major = classReader.readUnsignedShort();
 	}
 
 	private void readMagic() {
 		this.magic = classReader.readInt();
+		if (this.magic != 0xCAFEBABE) {
+			throw new RuntimeException("magic number is not 0xCAFEBABE but 0x"
+					+ Integer.toString(this.magic, 16));
+		}
 	}
 
 	public int getMagic() {

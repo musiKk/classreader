@@ -24,29 +24,31 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package classreader.instructions;
+package classreader;
 
-import classreader.ClassReader;
+import java.io.File;
 
-/**
- * An instruction factory creates instructions. Every type of instruction has
- * its own instruction factory and every instruction factory produces only one
- * type of instructions.
- * 
- * @author whahn
- * 
- */
-public interface InstructionFactory {
+public class ClassFileJarCollection extends ClassFileCollection {
 
-	/**
-	 * This is the factory method that creates an instruction. An
-	 * <code>InstructionFactory</code> must not read more bytes from the
-	 * {@link ClassReader} than it needs.
-	 * 
-	 * @param classReader
-	 *            the {@link ClassReader} instance for the current code.
-	 * @return the built {@link Instruction}
-	 */
-	Instruction getInstruction(ClassReader classReader);
+	private final ClassFileCollection[] collections;
+
+	public ClassFileJarCollection(ClassFileJarMode mode, File... jars) {
+		collections = new ClassFileCollection[jars.length];
+		for (int i = 0; i < jars.length; i++) {
+			collections[i] = ClassFileCollection.getClassFileCollection(
+					jars[i], mode);
+		}
+	}
+
+	@Override
+	public ClassFile getClassFile(String className) {
+		for (ClassFileCollection collection : collections) {
+			ClassFile cf = collection.getClassFile(className);
+			if (cf != null) {
+				return cf;
+			}
+		}
+		return null;
+	}
 
 }
