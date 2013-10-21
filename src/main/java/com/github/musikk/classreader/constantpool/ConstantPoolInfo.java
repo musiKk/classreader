@@ -118,4 +118,21 @@ public abstract class ConstantPoolInfo {
 		return cpi;
 	}
 
+	protected static ConstantPoolInfo createMethodHandle(ClassReader classStream) {
+		int referenceKind = classStream.readUnsignedByte();
+		int referenceIndex = classStream.readUnsignedShort();
+		return new MethodHandle(referenceKind, referenceIndex);
+	}
+
+	protected static ConstantPoolInfo createMethodType(ClassReader classStream) {
+		int descriptorIndex = classStream.readUnsignedShort();
+		return new MethodType(descriptorIndex);
+	}
+
+	protected static ConstantPoolInfo createInvokeDynamic(ClassReader classStream) {
+		int bootstrapMethodAttrIndex = classStream.readUnsignedShort();
+		int nameAndTypeIndex = classStream.readUnsignedShort();
+		return new InvokeDynamic(bootstrapMethodAttrIndex, nameAndTypeIndex);
+	}
+
 }

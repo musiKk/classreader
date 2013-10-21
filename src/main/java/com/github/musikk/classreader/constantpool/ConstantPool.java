@@ -41,6 +41,9 @@ public class ConstantPool {
 	public final static byte CONSTANT_Double = 6;
 	public final static byte CONSTANT_NameAndType = 12;
 	public final static byte CONSTANT_Utf8 = 1;
+	public final static byte CONSTANT_MethodHandle = 15;
+	public final static byte CONSTANT_MethodType = 16;
+	public final static byte CONSTANT_InvokeDynamic = 18;
 
 	private final ConstantPoolInfo[] constantPoolInfos;
 
@@ -107,6 +110,15 @@ public class ConstantPool {
 				break;
 			case CONSTANT_Utf8:
 				cpi = ConstantPoolInfo.createUtf8Info(classStream);
+				break;
+			case CONSTANT_MethodHandle:
+				cpi = ConstantPoolInfo.createMethodHandle(classStream);
+				break;
+			case CONSTANT_MethodType:
+				cpi = ConstantPoolInfo.createMethodType(classStream);
+				break;
+			case CONSTANT_InvokeDynamic:
+				cpi = ConstantPoolInfo.createInvokeDynamic(classStream);
 				break;
 			default:
 				throw new RuntimeException(
