@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Werner Hahn
+ * Copyright (c) 2013, Werner Hahn
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
