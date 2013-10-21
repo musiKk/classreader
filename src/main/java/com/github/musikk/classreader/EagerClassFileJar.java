@@ -51,8 +51,7 @@ public class EagerClassFileJar extends ClassFileCollection {
 
 	private void parseContents() {
 
-		try {
-			ZipFile zipFile = new ZipFile(jarFile);
+		try (ZipFile zipFile = new ZipFile(jarFile)) {
 			Enumeration<? extends ZipEntry> entries = zipFile.entries();
 			while (entries.hasMoreElements()) {
 
@@ -62,13 +61,10 @@ public class EagerClassFileJar extends ClassFileCollection {
 					continue;
 				}
 
-				InputStream is = zipFile.getInputStream(entry);
-				try {
+				try (InputStream is = zipFile.getInputStream(entry)) {
 					ClassFile cf = new ClassFile(is);
 					zipContent.put(entryName, cf);
-					is.close();
 				} catch (RuntimeException e) {
-					is.close();
 					throw new RuntimeException("error loading class '"
 							+ entryName + "'", e);
 				}

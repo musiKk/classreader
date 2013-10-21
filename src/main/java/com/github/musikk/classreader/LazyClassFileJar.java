@@ -46,15 +46,11 @@ public class LazyClassFileJar extends ClassFileCollection {
 		String entryName = convertClassNameToEntry(className);
 		ZipEntry entry = new ZipEntry(entryName);
 
-		try {
-			ZipFile zipFile = new ZipFile(jarFile);
-			InputStream is = zipFile.getInputStream(entry);
+		try (ZipFile zipFile = new ZipFile(jarFile); InputStream is = zipFile.getInputStream(entry)) {
 			if (is == null) {
 				return null;
 			}
-			ClassFile cf = new ClassFile(is);
-			is.close();
-			return cf;
+			return new ClassFile(is);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
