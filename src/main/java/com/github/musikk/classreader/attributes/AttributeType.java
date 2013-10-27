@@ -77,6 +77,7 @@ public enum AttributeType {
 	public AttributeInfo create(int attributeLength, byte[] info, ConstantPool constantPool) {
 		switch (this) {
 		case ANNOTATION_DEFAULT:
+			return AnnotationDefault.getAnnotationDefault(attributeLength, info, constantPool);
 		case BOOTSTRAP_METHODS:
 			return null;
 		case CODE:
@@ -100,7 +101,9 @@ public enum AttributeType {
 		case RUNTIME_INVISIBLE_PARAMETER_ANNOTATIONS:
 		case RUNTIME_VISIBLE_ANNOTATIONS:
 		case RUNTIME_VISIBLE_PARAMETER_ANNOTATIONS:
+			return null;
 		case SIGNATURE:
+			return Signature.getSignature(attributeLength, info, constantPool);
 		case SOURCE_DEBUG_EXTENSION:
 			return null;
 		case SOURCE_FILE:
