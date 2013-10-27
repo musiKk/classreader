@@ -85,9 +85,9 @@ public enum AttributeType {
 		case CONSTANT_VALUE:
 			return ConstantValueAttribute.getConstantValue(attributeLength, info, constantPool);
 		case DEPRECATED:
-			return null;
+			return Deprecated.getDeprecated();
 		case ENCLOSING_METHOD:
-			return null;
+			return EnclosingMethod.getEnclosingMethod(info, constantPool);
 		case EXCEPTIONS:
 			return ExceptionAttribute.getExceptionAttribute(attributeLength, info, constantPool);
 		case INNER_CLASSES:
