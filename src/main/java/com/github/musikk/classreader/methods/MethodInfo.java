@@ -26,30 +26,15 @@
  */
 package com.github.musikk.classreader.methods;
 
+import java.util.EnumSet;
+
 import com.github.musikk.classreader.ClassReader;
+import com.github.musikk.classreader.Modifier;
 import com.github.musikk.classreader.attributes.Attributes;
 
 public class MethodInfo {
 
-	private final static int ACC_PUBLIC = 0x0001;
-	private final static int ACC_PRIVATE = 0x0002;
-	private final static int ACC_PROTECTED = 0x0004;
-	private final static int ACC_STATIC = 0x0008;
-	private final static int ACC_FINAL = 0x0010;
-	private final static int ACC_SYNCHRONIZED = 0x0020;
-	private final static int ACC_NATIVE = 0x0100;
-	private final static int ACC_ABSTRACT = 0x0400;
-	private final static int ACC_STRICT = 0x0800;
-
-	private final boolean _public;
-	private final boolean _private;
-	private final boolean _protected;
-	private final boolean _static;
-	private final boolean _final;
-	private final boolean _synchronized;
-	private final boolean _native;
-	private final boolean _abstract;
-	private final boolean _strict;
+	private final EnumSet<Modifier> modifiers;
 
 	private final int nameIndex;
 	private final int descriptorIndex;
@@ -59,15 +44,7 @@ public class MethodInfo {
 	private MethodInfo(int flags, int nameIndex, int descriptorIndex,
 			Attributes attributes) {
 
-		_public = ((flags & ACC_PUBLIC) != 0);
-		_private = ((flags & ACC_PRIVATE) != 0);
-		_protected = ((flags & ACC_PROTECTED) != 0);
-		_static = ((flags & ACC_STATIC) != 0);
-		_final = ((flags & ACC_FINAL) != 0);
-		_synchronized = ((flags & ACC_SYNCHRONIZED) != 0);
-		_native = ((flags & ACC_NATIVE) != 0);
-		_abstract = ((flags & ACC_ABSTRACT) != 0);
-		_strict = ((flags & ACC_STRICT) != 0);
+		modifiers = Modifier.readModifiers(flags, Modifier.Target.METHOD);
 
 		this.nameIndex = nameIndex;
 		this.descriptorIndex = descriptorIndex;
@@ -77,39 +54,39 @@ public class MethodInfo {
 	}
 
 	public boolean isPublic() {
-		return _public;
+		return modifiers.contains(Modifier.PUBLIC);
 	}
 
 	public boolean isPrivate() {
-		return _private;
+		return modifiers.contains(Modifier.PRIVATE);
 	}
 
 	public boolean isProtected() {
-		return _protected;
+		return modifiers.contains(Modifier.PROTECTED);
 	}
 
 	public boolean isStatic() {
-		return _static;
+		return modifiers.contains(Modifier.STATIC);
 	}
 
 	public boolean isFinal() {
-		return _final;
+		return modifiers.contains(Modifier.FINAL);
 	}
 
 	public boolean isSynchronized() {
-		return _synchronized;
+		return modifiers.contains(Modifier.SYNCHRONIZED);
 	}
 
 	public boolean isNative() {
-		return _native;
+		return modifiers.contains(Modifier.NATIVE);
 	}
 
 	public boolean isAbstract() {
-		return _abstract;
+		return modifiers.contains(Modifier.ABSTRACT);
 	}
 
 	public boolean isStrict() {
-		return _strict;
+		return modifiers.contains(Modifier.STRICT);
 	}
 
 	public int getNameIndex() {

@@ -26,26 +26,15 @@
  */
 package com.github.musikk.classreader.fields;
 
+import java.util.EnumSet;
+
 import com.github.musikk.classreader.ClassReader;
+import com.github.musikk.classreader.Modifier;
 import com.github.musikk.classreader.attributes.Attributes;
 
 public class FieldInfo {
 
-	private final static int ACC_PUBLIC = 0x0001;
-	private final static int ACC_PRIVATE = 0x0002;
-	private final static int ACC_PROTECTED = 0x0004;
-	private final static int ACC_STATIC = 0x0008;
-	private final static int ACC_FINAL = 0x0010;
-	private final static int ACC_VOLATILE = 0x0040;
-	private final static int ACC_TRANSIENT = 0x0080;
-
-	private final boolean _public;
-	private final boolean _private;
-	private final boolean _protected;
-	private final boolean _static;
-	private final boolean _final;
-	private final boolean _volatile;
-	private final boolean _transient;
+	private final EnumSet<Modifier> modifiers;
 
 	private final int nameIndex;
 	private final int descriptorIndex;
@@ -55,13 +44,7 @@ public class FieldInfo {
 	private FieldInfo(int flags, int nameIndex, int descriptorIndex,
 			Attributes attributes) {
 
-		_public = ((flags & ACC_PUBLIC) != 0);
-		_private = ((flags & ACC_PRIVATE) != 0);
-		_protected = ((flags & ACC_PROTECTED) != 0);
-		_static = ((flags & ACC_STATIC) != 0);
-		_final = ((flags & ACC_FINAL) != 0);
-		_volatile = ((flags & ACC_VOLATILE) != 0);
-		_transient = ((flags & ACC_TRANSIENT) != 0);
+		modifiers = Modifier.readModifiers(flags, Modifier.Target.FIELD);
 
 		this.nameIndex = nameIndex;
 		this.descriptorIndex = descriptorIndex;
@@ -71,31 +54,31 @@ public class FieldInfo {
 	}
 
 	public boolean isPublic() {
-		return _public;
+		return modifiers.contains(Modifier.PUBLIC);
 	}
 
 	public boolean isPrivate() {
-		return _private;
+		return modifiers.contains(Modifier.PRIVATE);
 	}
 
 	public boolean isProtected() {
-		return _protected;
+		return modifiers.contains(Modifier.PROTECTED);
 	}
 
 	public boolean isStatic() {
-		return _static;
+		return modifiers.contains(Modifier.STATIC);
 	}
 
 	public boolean isFinal() {
-		return _final;
+		return modifiers.contains(Modifier.FINAL);
 	}
 
 	public boolean isVolatile() {
-		return _volatile;
+		return modifiers.contains(Modifier.VOLATILE);
 	}
 
 	public boolean isTransient() {
-		return _transient;
+		return modifiers.contains(Modifier.TRANSIENT);
 	}
 
 	public int getNameIndex() {

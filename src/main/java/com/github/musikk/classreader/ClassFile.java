@@ -32,6 +32,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.SortedMap;
 
 import com.github.musikk.classreader.attributes.AttributeInfo;
@@ -62,27 +63,6 @@ import com.github.musikk.classreader.methods.Methods;
 public class ClassFile {
 
 	/**
-	 * Bitmask for visibility modifier <i>public</i>.
-	 */
-	public static final int ACC_PUBLIC = 0x0001;
-	/**
-	 * Bitmask for modifier <i>final</i>.
-	 */
-	public static final int ACC_FINAL = 0x0010;
-	/**
-	 * Bitmask for special modifier <i>super</i>.
-	 */
-	public static final int ACC_SUPER = 0x0020;
-	/**
-	 * Bitmask for <i>interface</i> modifier.
-	 */
-	public static final int ACC_INTERFACE = 0x0200;
-	/**
-	 * Bitmask for modifier <i>abstract</i>.
-	 */
-	public static final int ACC_ABSTRACT = 0x0400;
-
-	/**
 	 * The {@link ClassReader} used to read the contents of the file.
 	 */
 	private final ClassReader classReader;
@@ -111,11 +91,7 @@ public class ClassFile {
 	 */
 	private ConstantPool constantPool;
 
-	private boolean _public;
-	private boolean _final;
-	private boolean _super;
-	private boolean _interface;
-	private boolean _abstract;
+	private EnumSet<Modifier> modifiers;
 
 	/**
 	 * The index of the name of this class in the {@link ClassFile#constantPool
@@ -247,11 +223,7 @@ public class ClassFile {
 	 */
 	private void readFlags() {
 		int accessFlags = classReader.readShort();
-		this._public = ((accessFlags & ACC_PUBLIC) != 0);
-		this._final = ((accessFlags & ACC_FINAL) != 0);
-		this._super = ((accessFlags & ACC_SUPER) != 0);
-		this._interface = ((accessFlags & ACC_INTERFACE) != 0);
-		this._abstract = ((accessFlags & ACC_ABSTRACT) != 0);
+		modifiers = Modifier.readModifiers(accessFlags, Modifier.Target.CLASS);
 	}
 
 	private void readConstantPool() {
@@ -300,23 +272,23 @@ public class ClassFile {
 	}
 
 	public boolean isPublic() {
-		return _public;
+		return modifiers.contains(Modifier.PUBLIC);
 	}
 
 	public boolean isFinal() {
-		return _final;
+		return modifiers.contains(Modifier.FINAL);
 	}
 
 	public boolean isSuper() {
-		return _super;
+		return modifiers.contains(Modifier.SUPER);
 	}
 
 	public boolean isInterface() {
-		return _interface;
+		return modifiers.contains(Modifier.INTERFACE);
 	}
 
 	public boolean isAbstract() {
-		return _abstract;
+		return modifiers.contains(Modifier.ABSTRACT);
 	}
 
 	public int getThisClassIndex() {

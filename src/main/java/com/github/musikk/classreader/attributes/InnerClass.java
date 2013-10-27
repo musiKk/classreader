@@ -26,8 +26,10 @@
  */
 package com.github.musikk.classreader.attributes;
 
-import com.github.musikk.classreader.ClassFile;
+import java.util.EnumSet;
+
 import com.github.musikk.classreader.ClassReader;
+import com.github.musikk.classreader.Modifier;
 
 public class InnerClass {
 
@@ -35,11 +37,7 @@ public class InnerClass {
 	private final int outerClassInfoIndex;
 	private final int innerNameIndex;
 
-	private final boolean _public;
-	private final boolean _final;
-	private final boolean _super;
-	private final boolean _interface;
-	private final boolean _abstract;
+	private final EnumSet<Modifier> modifiers;
 
 	private InnerClass(int innerClassInfoIndex, int outerClassInfoIndex,
 			int innerNameIndex, int innerClassAccessFlags) {
@@ -48,12 +46,7 @@ public class InnerClass {
 		this.outerClassInfoIndex = outerClassInfoIndex;
 		this.innerNameIndex = innerNameIndex;
 
-		this._public = ((innerClassAccessFlags & ClassFile.ACC_PUBLIC) != 0);
-		this._final = ((innerClassAccessFlags & ClassFile.ACC_FINAL) != 0);
-		this._super = ((innerClassAccessFlags & ClassFile.ACC_SUPER) != 0);
-		this._interface = ((innerClassAccessFlags & ClassFile.ACC_INTERFACE) != 0);
-		this._abstract = ((innerClassAccessFlags & ClassFile.ACC_ABSTRACT) != 0);
-
+		modifiers = Modifier.readModifiers(innerClassAccessFlags, Modifier.Target.NESTED_CLASS);
 	}
 
 	public int getInnerClassInfoIndex() {
@@ -68,24 +61,24 @@ public class InnerClass {
 		return innerNameIndex;
 	}
 
-	public boolean is_public() {
-		return _public;
+	public boolean isPublic() {
+		return modifiers.contains(Modifier.PUBLIC);
 	}
 
-	public boolean is_final() {
-		return _final;
+	public boolean isFinal() {
+		return modifiers.contains(Modifier.FINAL);
 	}
 
-	public boolean is_super() {
-		return _super;
+	public boolean isSuper() {
+		return modifiers.contains(Modifier.SUPER);
 	}
 
-	public boolean is_interface() {
-		return _interface;
+	public boolean isInterface() {
+		return modifiers.contains(Modifier.INTERFACE);
 	}
 
-	public boolean is_abstract() {
-		return _abstract;
+	public boolean isAbstract() {
+		return modifiers.contains(Modifier.ABSTRACT);
 	}
 
 	protected static InnerClass getInnerClass(ClassReader classReader) {
