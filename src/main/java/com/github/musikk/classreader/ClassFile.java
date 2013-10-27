@@ -39,6 +39,7 @@ import com.github.musikk.classreader.attributes.Attributes;
 import com.github.musikk.classreader.attributes.Code;
 import com.github.musikk.classreader.attributes.CodeAttribute;
 import com.github.musikk.classreader.constantpool.ConstantPool;
+import com.github.musikk.classreader.constantpool.ConstantPoolInfo;
 import com.github.musikk.classreader.constantpool.Utf8Info;
 import com.github.musikk.classreader.fields.FieldInfo;
 import com.github.musikk.classreader.fields.Fields;
@@ -49,14 +50,14 @@ import com.github.musikk.classreader.methods.Methods;
 
 
 /**
- * 
+ *
  * This class represents a class file conforming to the <a href=
  * "http://java.sun.com/docs/books/jvms/second_edition/html/VMSpecTOC.doc.html"
  * >Java Virtual Machine Specification</a>. It provides methods for every aspect
  * a class file has to offer.
- * 
+ *
  * @author Werner hahn
- * 
+ *
  */
 public class ClassFile {
 
@@ -165,7 +166,7 @@ public class ClassFile {
 
 	/**
 	 * Create a <code>ClassFile</code> from the given stream.
-	 * 
+	 *
 	 * @param is
 	 *            an <code>InputStream</code> referring to the class.
 	 */
@@ -357,7 +358,7 @@ public class ClassFile {
 	/**
 	 * A simple {@code main} method to test the Classreader library. It reads a
 	 * single class file and dumps a few statistics to standard output.
-	 * 
+	 *
 	 * @param args
 	 *            the first element of this array is treated as a path to a
 	 *            class file, the rest is ignored
@@ -386,7 +387,16 @@ public class ClassFile {
 		System.out.printf("interface: %b%n", cf.isInterface());
 		System.out.printf("abstract:  %b%n", cf.isAbstract());
 
+		System.out.println();
+
 		ConstantPool cp = cf.constantPool;
+
+		System.out.println("constant pool:");
+		for (int i = 1; i <= cf.constantPoolCount; i++) {
+			ConstantPoolInfo info = cp.getConstantPoolInfo(i);
+			System.out.printf(" - %d -> %s%n", i, info);
+		}
+		System.out.println(cf.constantPoolCount + " items\n");
 
 		Fields fields = cf.getFields();
 		System.out.println("fields:");
@@ -417,6 +427,7 @@ public class ClassFile {
 								.getValue());
 				System.out.printf("    info: %s%n", Arrays.toString(ai
 						.getInfo()));
+				System.out.printf("    to string: %s%n", ai);
 				System.out.println();
 			}
 
@@ -455,6 +466,7 @@ public class ClassFile {
 						name);
 				System.out.printf("    info: %s%n", Arrays.toString(ai
 						.getInfo()));
+				System.out.printf("    to string: %s%n", ai);
 
 				if ("Code".equals(name)) {
 					CodeAttribute codeAttribute = (CodeAttribute) ai;
