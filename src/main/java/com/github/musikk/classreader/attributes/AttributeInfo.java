@@ -31,16 +31,6 @@ import com.github.musikk.classreader.constantpool.ConstantPool;
 
 public class AttributeInfo {
 
-	public final static String CONSTANT_VALUE_NAME = "ConstantValue";
-	public final static String CODE_NAME = "Code";
-	public final static String EXCEPTIONS_NAME = "Exceptions";
-	public final static String SOURCE_FILE_NAME = "SourceFile";
-	public final static String INNER_CLASSES_NAME = "InnerClasses";
-	public final static String SYNTHETIC_NAME = "Synthetic";
-	public final static String LINE_NUMBER_TABLE_NAME = "LineNumberTable";
-	public final static String LOCAL_VARIABLE_TABLE_NAME = "LocalVariableTable";
-	public final static String DEPRECATED_NAME = "Deprecated";
-
 	private int attributeNameIndex;
 	private int attributeLength;
 	private byte[] info;
@@ -76,36 +66,18 @@ public class AttributeInfo {
 		byte[] info = new byte[attributeLength];
 		classReader.readBytesFully(info);
 
-		AttributeInfo attributeInfo = null;
-
 		ConstantPool constantPool = classReader.getConstantPool();
 		String attributeName = constantPool.getUtf8Info(attributeNameIndex)
 				.getValue();
-		if (attributeName.equals(CONSTANT_VALUE_NAME)) {
-			attributeInfo = ConstantValueAttribute.getConstantValue(
-					attributeLength, info, constantPool);
-		} else if (attributeName.equals(CODE_NAME)) {
-			attributeInfo = CodeAttribute.getCode(attributeLength, info,
-					constantPool);
-		} else if (attributeName.equals(EXCEPTIONS_NAME)) {
-			attributeInfo = ExceptionAttribute.getExceptionAttribute(
-					attributeLength, info, constantPool);
-		} else if (attributeName.equals(INNER_CLASSES_NAME)) {
-			attributeInfo = InnerClassesAttribute.getInnerClassesAttribute(
-					attributeLength, info, constantPool);
-		} else if (attributeName.equals(SYNTHETIC_NAME)) {
-			attributeInfo = SyntheticAttribute.getSyntheticAttribute();
-		} else if (attributeName.equals(SOURCE_FILE_NAME)) {
-			attributeInfo = SourceFileAttribute.getSourceFileAttribute(
-					attributeLength, info, constantPool);
-		} else if (attributeName.equals(LINE_NUMBER_TABLE_NAME)) {
-			attributeInfo = LineNumberTableAttribute
-					.getLineNumberTableAttribute(attributeLength, info,
-							constantPool);
-		} else if (attributeName.equals(LOCAL_VARIABLE_TABLE_NAME)) {
-			attributeInfo = LocalVariableTableAttribute
-					.getLocalVariableTableAttribute(attributeLength, info,
-							constantPool);
+		AttributeType attributeType = AttributeType.byName(attributeName);
+
+		AttributeInfo attributeInfo;
+		if (attributeType != null) {
+			attributeInfo = attributeType.create(attributeLength, info, constantPool);
+			// TODO remove once all attribute types are implemented
+			if (attributeInfo == null) {
+				attributeInfo = new AttributeInfo();
+			}
 		} else {
 			attributeInfo = new AttributeInfo();
 		}
