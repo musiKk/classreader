@@ -26,9 +26,13 @@
  */
 package com.github.musikk.classreader.constantpool;
 
+import java.util.Iterator;
+
+import org.apache.commons.collections.iterators.ArrayIterator;
+
 import com.github.musikk.classreader.ClassReader;
 
-public class ConstantPool {
+public class ConstantPool implements Iterable<ConstantPoolInfo> {
 
 	public final static byte CONSTANT_Class = 7;
 	public final static byte CONSTANT_Fieldref = 9;
@@ -130,6 +134,12 @@ public class ConstantPool {
 
 		return new ConstantPool(constantPoolInfos);
 
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Iterator<ConstantPoolInfo> iterator() {
+		return new ArrayIterator(constantPoolInfos);
 	}
 
 }

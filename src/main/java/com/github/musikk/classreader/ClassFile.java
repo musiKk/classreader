@@ -48,8 +48,6 @@ import com.github.musikk.classreader.instructions.Instruction;
 import com.github.musikk.classreader.methods.MethodInfo;
 import com.github.musikk.classreader.methods.Methods;
 
-
-
 /**
  *
  * This class represents a class file conforming to the <a href=
@@ -82,11 +80,6 @@ public class ClassFile {
 	private int major;
 
 	/**
-	 * The number of constants as read in the file. The actual number of
-	 * constants is one less.
-	 */
-	private int constantPoolCount;
-	/**
 	 * The {@link ConstantPool} of this class file.
 	 */
 	private ConstantPool constantPool;
@@ -105,36 +98,20 @@ public class ClassFile {
 	private int superClassIndex;
 
 	/**
-	 * The number of interfaces this class implements.
-	 */
-	private int interfacesCount;
-	/**
 	 * The interfaces this class implements.
 	 */
 	private Interfaces interfaces;
 
-	/**
-	 * The number of fields of this class.
-	 */
-	private int fieldsCount;
 	/**
 	 * The fields of this class.
 	 */
 	private Fields fields;
 
 	/**
-	 * The number of methods of this class.
-	 */
-	private int methodsCount;
-	/**
 	 * The methods of this class.
 	 */
 	private Methods methods;
 
-	/**
-	 * The number of attributes of this class.
-	 */
-	private int attributesCount;
 	/**
 	 * The attributes of this class.
 	 */
@@ -155,59 +132,39 @@ public class ClassFile {
 	 * Starts the parsing process. Just a bunch of delegates.
 	 */
 	private void parseFile() {
-
 		readMagic();
 		readMinor();
 		readMajor();
-		readConstantPoolCount();
 		readConstantPool();
 		classReader.setConstantPool(this.constantPool);
 		readFlags();
 		readThisClassIndex();
 		readSuperClassIndex();
-		readInterfacesCount();
 		readInterfaces();
-		readFieldsCount();
 		readFields();
-		readMethodsCount();
 		readMethods();
-		readAttributesCount();
 		readAttributes();
-
 	}
 
 	private void readAttributes() {
+		int attributesCount = classReader.readUnsignedShort();
 		this.attributes = Attributes
 				.getAttributes(classReader, attributesCount);
 	}
 
-	private void readAttributesCount() {
-		this.attributesCount = classReader.readUnsignedShort();
-	}
-
 	private void readMethods() {
+		int methodsCount = classReader.readUnsignedShort();
 		this.methods = Methods.getMethods(classReader, methodsCount);
 	}
 
-	private void readMethodsCount() {
-		this.methodsCount = classReader.readUnsignedShort();
-	}
-
 	private void readFields() {
+		int fieldsCount = classReader.readUnsignedShort();
 		this.fields = Fields.getFields(classReader, fieldsCount);
 	}
 
-	private void readFieldsCount() {
-		this.fieldsCount = classReader.readUnsignedShort();
-	}
-
 	private void readInterfaces() {
-		this.interfaces = Interfaces
-				.getInterfaces(classReader, interfacesCount);
-	}
-
-	private void readInterfacesCount() {
-		this.interfacesCount = classReader.readUnsignedShort();
+		int interfacesCount = classReader.readUnsignedShort();
+		this.interfaces = Interfaces.getInterfaces(classReader, interfacesCount);
 	}
 
 	private void readSuperClassIndex() {
@@ -227,12 +184,9 @@ public class ClassFile {
 	}
 
 	private void readConstantPool() {
+		int constantPoolCount = classReader.readUnsignedShort();
 		constantPool = ConstantPool.createConstantPool(classReader,
 				constantPoolCount);
-	}
-
-	private void readConstantPoolCount() {
-		constantPoolCount = classReader.readUnsignedShort();
 	}
 
 	private void readMinor() {
@@ -261,10 +215,6 @@ public class ClassFile {
 
 	public int getMajor() {
 		return major;
-	}
-
-	public int getConstantPoolCount() {
-		return constantPoolCount;
 	}
 
 	public ConstantPool getConstantPool() {
@@ -299,24 +249,12 @@ public class ClassFile {
 		return superClassIndex;
 	}
 
-	public int getInterfacesCount() {
-		return interfacesCount;
-	}
-
 	public Interfaces getInterfaces() {
 		return interfaces;
 	}
 
-	public int getFieldsCount() {
-		return fieldsCount;
-	}
-
 	public Fields getFields() {
 		return fields;
-	}
-
-	public int getMethodsCount() {
-		return methodsCount;
 	}
 
 	public Methods getMethods() {
@@ -351,7 +289,6 @@ public class ClassFile {
 		System.out.printf("magic: %X%n", cf.getMagic());
 		System.out.printf("minor: %d%n", cf.getMinor());
 		System.out.printf("major: %d%n", cf.getMajor());
-		System.out.printf("const: %d%n", cf.getConstantPoolCount());
 
 		System.out.printf("public:    %b%n", cf.isPublic());
 		System.out.printf("final:     %b%n", cf.isFinal());
@@ -364,11 +301,9 @@ public class ClassFile {
 		ConstantPool cp = cf.constantPool;
 
 		System.out.println("constant pool:");
-		for (int i = 1; i <= cf.constantPoolCount; i++) {
-			ConstantPoolInfo info = cp.getConstantPoolInfo(i);
-			System.out.printf(" - %d -> %s%n", i, info);
+		for (ConstantPoolInfo info : cp) {
+			System.out.printf(" - %s%n", info);
 		}
-		System.out.println(cf.constantPoolCount + " items\n");
 
 		Fields fields = cf.getFields();
 		System.out.println("fields:");
