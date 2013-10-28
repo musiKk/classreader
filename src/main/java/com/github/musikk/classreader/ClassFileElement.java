@@ -24,22 +24,10 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.musikk.classreader.constantpool;
+package com.github.musikk.classreader;
 
-import com.github.musikk.classreader.ClassReaderContext;
+public interface ClassFileElement<T extends ClassFileElement<T>> {
 
-public class FloatInfo extends ConstantPoolInfo<FloatInfo> {
-
-	private float value;
-
-	public float getValue() {
-		return value;
-	}
-
-	@Override
-	public FloatInfo read(ClassReaderContext ctxt) {
-		value = ctxt.getClassReader().readFloat();
-		return this;
-	}
+	T read(ClassReaderContext ctxt);
 
 }

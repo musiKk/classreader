@@ -26,15 +26,13 @@
  */
 package com.github.musikk.classreader.constantpool;
 
-public class InvokeDynamic extends ConstantPoolInfo {
+import com.github.musikk.classreader.ClassReader;
+import com.github.musikk.classreader.ClassReaderContext;
 
-	private final int bootstrapMethodAttrIndex;
-	private final int nameAndTypeIndex;
+public class InvokeDynamic extends ConstantPoolInfo<InvokeDynamic> {
 
-	public InvokeDynamic(int bootstrapMethodAttrIndex, int nameAndTypeIndex) {
-		this.bootstrapMethodAttrIndex = bootstrapMethodAttrIndex;
-		this.nameAndTypeIndex = nameAndTypeIndex;
-	}
+	private int bootstrapMethodAttrIndex;
+	private int nameAndTypeIndex;
 
 	public int getBootstrapMethodAttrIndex() {
 		return bootstrapMethodAttrIndex;
@@ -42,6 +40,16 @@ public class InvokeDynamic extends ConstantPoolInfo {
 
 	public int getNameAndTypeIndex() {
 		return nameAndTypeIndex;
+	}
+
+	@Override
+	public InvokeDynamic read(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
+
+		bootstrapMethodAttrIndex = reader.readUnsignedShort();
+		nameAndTypeIndex = reader.readUnsignedShort();
+
+		return this;
 	}
 
 	@Override
