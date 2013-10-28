@@ -66,11 +66,6 @@ public class ClassFile {
 	private final ClassReader classReader;
 
 	/**
-	 * The magic number of the file. Must be <code>0xCAFEBABE</code>.
-	 */
-	private int magic;
-
-	/**
 	 * Minor version number.
 	 */
 	private int minor;
@@ -132,7 +127,7 @@ public class ClassFile {
 	 * Starts the parsing process. Just a bunch of delegates.
 	 */
 	private void parseFile() {
-		readMagic();
+		checkMagic();
 		readMinor();
 		readMajor();
 		readConstantPool();
@@ -195,16 +190,12 @@ public class ClassFile {
 		major = classReader.readUnsignedShort();
 	}
 
-	private void readMagic() {
-		this.magic = classReader.readInt();
-		if (this.magic != 0xCAFEBABE) {
+	private void checkMagic() {
+		int magic = classReader.readInt();
+		if (magic != 0xCAFEBABE) {
 			throw new RuntimeException("magic number is not 0xCAFEBABE but 0x"
-					+ Integer.toString(this.magic, 16));
+					+ Integer.toString(magic, 16));
 		}
-	}
-
-	public int getMagic() {
-		return magic;
 	}
 
 	public int getMinor() {
@@ -284,7 +275,6 @@ public class ClassFile {
 
 		ClassFile cf = new ClassFile(new BufferedInputStream(fis));
 
-		System.out.printf("magic: %X%n", cf.getMagic());
 		System.out.printf("minor: %d%n", cf.getMinor());
 		System.out.printf("major: %d%n", cf.getMajor());
 
