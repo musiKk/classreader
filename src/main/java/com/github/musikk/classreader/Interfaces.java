@@ -26,29 +26,28 @@
  */
 package com.github.musikk.classreader;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class Interfaces {
 
-	private final int[] interfaceIndexes;
+	private final List<Integer> interfaceIndexes;
 
-	private Interfaces(int[] interfaceIndexes) {
+	private Interfaces(List<Integer> interfaceIndexes) {
 		this.interfaceIndexes = interfaceIndexes;
 	}
 
-	public int getInterfaceIndex(int index) {
-		return interfaceIndexes[index];
+	public List<Integer> getInterfaceIndexes() {
+		return Collections.unmodifiableList(interfaceIndexes);
 	}
 
-	public int[] getInterfaceIndexes() {
-		return interfaceIndexes;
-	}
+	public static Interfaces getInterfaces(ClassReader classStream, int interfacesCount) {
 
-	public static Interfaces getInterfaces(ClassReader classStream,
-			int interfacesCount) {
-
-		int[] interfaceIndexes = new int[interfacesCount];
+		List<Integer> interfaceIndexes = new ArrayList<>(interfacesCount);
 
 		for (int i = 0; i < interfacesCount; i++) {
-			interfaceIndexes[i] = classStream.readShort();
+			interfaceIndexes.add(classStream.readUnsignedShort());
 		}
 
 		return new Interfaces(interfaceIndexes);

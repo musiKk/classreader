@@ -26,30 +26,30 @@
  */
 package com.github.musikk.classreader.fields;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.github.musikk.classreader.ClassReader;
 
 public class Fields {
 
-	private final FieldInfo[] fieldInfos;
+	private final List<FieldInfo> fieldInfos;
 
-	private Fields(FieldInfo[] fieldInfos) {
+	private Fields(List<FieldInfo> fieldInfos) {
 		this.fieldInfos = fieldInfos;
 	}
 
-	public FieldInfo getFieldInfo(int index) {
-		return fieldInfos[index];
-	}
-
-	public FieldInfo[] getFieldInfos() {
-		return fieldInfos;
+	public List<FieldInfo> getFieldInfos() {
+		return Collections.unmodifiableList(fieldInfos);
 	}
 
 	public static Fields getFields(ClassReader classStream, int fieldsCount) {
 
-		FieldInfo[] fieldInfos = new FieldInfo[fieldsCount];
+		List<FieldInfo> fieldInfos = new ArrayList<>(fieldsCount);
 
 		for (int i = 0; i < fieldsCount; i++) {
-			fieldInfos[i] = FieldInfo.getFieldInfo(classStream);
+			fieldInfos.add(FieldInfo.getFieldInfo(classStream));
 		}
 
 		return new Fields(fieldInfos);

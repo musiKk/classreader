@@ -26,30 +26,30 @@
  */
 package com.github.musikk.classreader.attributes;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.github.musikk.classreader.ClassReader;
 
 public class Attributes {
 
-	private final AttributeInfo[] attributeInfos;
+	private final List<AttributeInfo> attributeInfos;
 
-	private Attributes(AttributeInfo[] attributeInfos) {
+	private Attributes(List<AttributeInfo> attributeInfos) {
 		this.attributeInfos = attributeInfos;
 	}
 
-	public AttributeInfo getAttributeInfo(int index) {
-		return attributeInfos[index];
-	}
-
-	public AttributeInfo[] getAttributeInfos() {
-		return attributeInfos;
+	public List<AttributeInfo> getAttributeInfos() {
+		return Collections.unmodifiableList(attributeInfos);
 	}
 
 	public static Attributes getAttributes(ClassReader classStream,
 			int attributesCount) {
 
-		AttributeInfo[] attributeInfos = new AttributeInfo[attributesCount];
+		List<AttributeInfo> attributeInfos = new ArrayList<>(attributesCount);
 		for (int i = 0; i < attributesCount; i++) {
-			attributeInfos[i] = AttributeInfo.getAttributeInfo(classStream);
+			attributeInfos.add(AttributeInfo.getAttributeInfo(classStream));
 		}
 		return new Attributes(attributeInfos);
 

@@ -26,29 +26,29 @@
  */
 package com.github.musikk.classreader.methods;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.github.musikk.classreader.ClassReader;
 
 public class Methods {
 
-	private final MethodInfo[] methodInfos;
+	private final List<MethodInfo> methodInfos;
 
-	private Methods(MethodInfo[] methodInfos) {
+	private Methods(List<MethodInfo> methodInfos) {
 		this.methodInfos = methodInfos;
 	}
 
-	public MethodInfo getMethodInfo(int index) {
-		return methodInfos[index];
-	}
-
-	public MethodInfo[] getMethodInfos() {
-		return methodInfos;
+	public List<MethodInfo> getMethodInfos() {
+		return Collections.unmodifiableList(methodInfos);
 	}
 
 	public static Methods getMethods(ClassReader classStream, int methodsCount) {
 
-		MethodInfo[] methodInfos = new MethodInfo[methodsCount];
+		List<MethodInfo> methodInfos = new ArrayList<MethodInfo>(methodsCount);
 		for (int i = 0; i < methodsCount; i++) {
-			methodInfos[i] = MethodInfo.getMethodInfo(classStream);
+			methodInfos.add(MethodInfo.getMethodInfo(classStream));
 		}
 
 		return new Methods(methodInfos);

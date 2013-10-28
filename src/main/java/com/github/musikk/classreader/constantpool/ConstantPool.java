@@ -26,9 +26,9 @@
  */
 package com.github.musikk.classreader.constantpool;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-
-import org.apache.commons.collections.iterators.ArrayIterator;
+import java.util.List;
 
 import com.github.musikk.classreader.ClassReader;
 
@@ -49,14 +49,19 @@ public class ConstantPool implements Iterable<ConstantPoolInfo> {
 	public final static byte CONSTANT_MethodType = 16;
 	public final static byte CONSTANT_InvokeDynamic = 18;
 
-	private final ConstantPoolInfo[] constantPoolInfos;
+	private final List<ConstantPoolInfo> constantPoolInfos;
 
-	private ConstantPool(ConstantPoolInfo[] constantPoolInfos) {
+	private ConstantPool(List<ConstantPoolInfo> constantPoolInfos) {
 		this.constantPoolInfos = constantPoolInfos;
 	}
 
 	public ConstantPoolInfo getConstantPoolInfo(int index) {
-		return constantPoolInfos[index - 1];
+		ConstantPoolInfo cpi = constantPoolInfos.get(index - 1);
+		if (cpi == null) {
+			throw new IllegalArgumentException("The index " + index + " is invalid. "
+					+ "Is the previous entry a long or double constant?");
+		}
+		return cpi;
 	}
 
 	public Utf8Info getUtf8Info(int index) {
@@ -73,7 +78,7 @@ public class ConstantPool implements Iterable<ConstantPoolInfo> {
 	public static ConstantPool createConstantPool(ClassReader classStream,
 			int constantPoolCount) {
 
-		ConstantPoolInfo[] constantPoolInfos = new ConstantPoolInfo[constantPoolCount];
+		List<ConstantPoolInfo> constantPoolInfos = new ArrayList<ConstantPoolInfo>(constantPoolCount);
 
 		for (int i = 0; i < constantPoolCount - 1; i++) {
 			ConstantPoolInfo cpi = null;
@@ -129,17 +134,51 @@ public class ConstantPool implements Iterable<ConstantPoolInfo> {
 						"unexpected constant pool info tag: " + readTag);
 			}
 			cpi.setTag(readTag);
-			constantPoolInfos[i] = cpi;
+			constantPoolInfos.add(i, cpi);
 		}
 
 		return new ConstantPool(constantPoolInfos);
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Iterator<ConstantPoolInfo> iterator() {
-		return new ArrayIterator(constantPoolInfos);
+		return new ConstantPoolIterator();
+	}
+
+	/**
+	 * A special {@code Iterator} that skips the missing entries after a long
+	 * and double constant.
+	 *
+	 * @author werner
+	 *
+	 */
+	public class ConstantPoolIterator implements Iterator<ConstantPoolInfo> {
+
+		int currentIndex = 0;
+
+		@Override
+		public boolean hasNext() {
+			return currentIndex < constantPoolInfos.size();
+		}
+
+		@Override
+		public ConstantPoolInfo next() {
+			ConstantPoolInfo cpi = constantPoolInfos.get(currentIndex++);
+			if (cpi == null) {
+				cpi = constantPoolInfos.get(currentIndex++);
+				if (cpi == null) {
+					throw new IllegalStateException("Two consecutive entries in the constant pool are null.");
+				}
+			}
+			return cpi;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+
 	}
 
 }
