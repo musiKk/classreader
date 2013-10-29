@@ -80,11 +80,11 @@ public class AttributeInfo {
 			}
 		} else {
 			attributeInfo = new AttributeInfo();
+			attributeInfo.setInfo(info);
 		}
 
 		attributeInfo.setAttributeNameIndex(attributeNameIndex);
 		attributeInfo.setAttributeLength(attributeLength);
-		attributeInfo.setInfo(info);
 
 		return attributeInfo;
 	}
