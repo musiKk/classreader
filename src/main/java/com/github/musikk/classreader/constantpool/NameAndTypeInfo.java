@@ -26,10 +26,12 @@
  */
 package com.github.musikk.classreader.constantpool;
 
+import com.github.musikk.classreader.ClassReader;
+import com.github.musikk.classreader.ClassReaderContext;
+
 public class NameAndTypeInfo extends ConstantPoolInfo {
 
 	private final int nameIndex;
-
 	private final int descriptorIndex;
 
 	public NameAndTypeInfo(int descriptorIndex, int nameIndex) {
@@ -43,6 +45,14 @@ public class NameAndTypeInfo extends ConstantPoolInfo {
 
 	public int getDescriptorIndex() {
 		return descriptorIndex;
+	}
+
+	static NameAndTypeInfo createNameAndTypeInfo(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
+
+		int nameIndex = reader.readShort();
+		int descriptorIndex = reader.readShort();
+		return new NameAndTypeInfo(nameIndex, descriptorIndex);
 	}
 
 }

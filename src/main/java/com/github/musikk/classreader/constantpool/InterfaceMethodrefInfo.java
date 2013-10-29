@@ -26,14 +26,15 @@
  */
 package com.github.musikk.classreader.constantpool;
 
+import com.github.musikk.classreader.ClassReader;
+import com.github.musikk.classreader.ClassReaderContext;
+
 public class InterfaceMethodrefInfo extends ConstantPoolInfo {
 
 	private final int classIndex;
-
 	private final int nameAndTypeIndex;
 
 	public InterfaceMethodrefInfo(int classIndex, int nameAndTypeIndex) {
-		super();
 		this.classIndex = classIndex;
 		this.nameAndTypeIndex = nameAndTypeIndex;
 	}
@@ -44,6 +45,14 @@ public class InterfaceMethodrefInfo extends ConstantPoolInfo {
 
 	public int getNameAndTypeIndex() {
 		return nameAndTypeIndex;
+	}
+
+	static InterfaceMethodrefInfo createInterfaceMethodrefInfo(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
+
+		int classIndex = reader.readShort();
+		int nameAndTypeIndex = reader.readShort();
+		return new InterfaceMethodrefInfo(classIndex, nameAndTypeIndex);
 	}
 
 }

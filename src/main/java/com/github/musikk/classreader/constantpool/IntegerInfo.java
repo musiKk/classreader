@@ -26,6 +26,8 @@
  */
 package com.github.musikk.classreader.constantpool;
 
+import com.github.musikk.classreader.ClassReaderContext;
+
 public class IntegerInfo extends ConstantPoolInfo {
 
 	private final int value;
@@ -36,6 +38,11 @@ public class IntegerInfo extends ConstantPoolInfo {
 
 	public int getValue() {
 		return value;
+	}
+
+	static IntegerInfo createIntegerInfo(ClassReaderContext ctxt) {
+		int value = ctxt.getClassReader().readInt();
+		return new IntegerInfo(value);
 	}
 
 }

@@ -31,23 +31,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.github.musikk.classreader.ClassReader;
+import com.github.musikk.classreader.ClassReaderContext;
 
 public class ConstantPool implements Iterable<ConstantPoolInfo> {
-
-	public final static byte CONSTANT_Class = 7;
-	public final static byte CONSTANT_Fieldref = 9;
-	public final static byte CONSTANT_Methodref = 10;
-	public final static byte CONSTANT_InterfaceMethodref = 11;
-	public final static byte CONSTANT_String = 8;
-	public final static byte CONSTANT_Integer = 3;
-	public final static byte CONSTANT_Float = 4;
-	public final static byte CONSTANT_Long = 5;
-	public final static byte CONSTANT_Double = 6;
-	public final static byte CONSTANT_NameAndType = 12;
-	public final static byte CONSTANT_Utf8 = 1;
-	public final static byte CONSTANT_MethodHandle = 15;
-	public final static byte CONSTANT_MethodType = 16;
-	public final static byte CONSTANT_InvokeDynamic = 18;
 
 	private final List<ConstantPoolInfo> constantPoolInfos;
 
@@ -75,70 +61,23 @@ public class ConstantPool implements Iterable<ConstantPoolInfo> {
 						+ ".");
 	}
 
-	public static ConstantPool createConstantPool(ClassReader classStream,
-			int constantPoolCount) {
-
+	public static ConstantPool createConstantPool(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
+		int constantPoolCount = reader.readUnsignedShort();
 		List<ConstantPoolInfo> constantPoolInfos = new ArrayList<ConstantPoolInfo>(constantPoolCount);
 
 		for (int i = 0; i < constantPoolCount - 1; i++) {
-			ConstantPoolInfo cpi = null;
-			byte readTag = classStream.readByte();
-			switch (readTag) {
-			case CONSTANT_Class:
-				cpi = ConstantPoolInfo.createConstantClassInfo(classStream);
-				break;
-			case CONSTANT_Fieldref:
-				cpi = ConstantPoolInfo.createConstantFieldrefInfo(classStream);
-				break;
-			case CONSTANT_Methodref:
-				cpi = ConstantPoolInfo.createConstantMethodrefInfo(classStream);
-				break;
-			case CONSTANT_InterfaceMethodref:
-				cpi = ConstantPoolInfo
-						.createInterfaceMethodrefInfo(classStream);
-				break;
-			case CONSTANT_String:
-				cpi = ConstantPoolInfo.createStringInfo(classStream);
-				break;
-			case CONSTANT_Integer:
-				cpi = ConstantPoolInfo.createIntegerInfo(classStream);
-				break;
-			case CONSTANT_Float:
-				cpi = ConstantPoolInfo.createFloatInfo(classStream);
-				break;
-			case CONSTANT_Long:
-				cpi = ConstantPoolInfo.createLongInfo(classStream);
-				i++;
-				break;
-			case CONSTANT_Double:
-				cpi = ConstantPoolInfo.createDoubleInfo(classStream);
-				i++;
-				break;
-			case CONSTANT_NameAndType:
-				cpi = ConstantPoolInfo.createNameAndTypeInfo(classStream);
-				break;
-			case CONSTANT_Utf8:
-				cpi = ConstantPoolInfo.createUtf8Info(classStream);
-				break;
-			case CONSTANT_MethodHandle:
-				cpi = ConstantPoolInfo.createMethodHandle(classStream);
-				break;
-			case CONSTANT_MethodType:
-				cpi = ConstantPoolInfo.createMethodType(classStream);
-				break;
-			case CONSTANT_InvokeDynamic:
-				cpi = ConstantPoolInfo.createInvokeDynamic(classStream);
-				break;
-			default:
-				throw new RuntimeException(
-						"unexpected constant pool info tag: " + readTag);
-			}
-			cpi.setTag(readTag);
+			byte tag = reader.readByte();
+			ConstantPoolInfoType cpit = ConstantPoolInfoType.getByTag(tag);
+
+			ConstantPoolInfo cpi = cpit.create(ctxt);
+			cpi.setTag(tag);
 			constantPoolInfos.add(i, cpi);
 		}
 
-		return new ConstantPool(constantPoolInfos);
-
+		ConstantPool constantPool = new ConstantPool(constantPoolInfos);
+		ctxt.setConstantPool(constantPool);
+		return constantPool;
 	}
 
 	@Override

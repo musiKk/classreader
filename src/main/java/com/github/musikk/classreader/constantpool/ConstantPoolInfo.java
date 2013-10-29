@@ -26,7 +26,6 @@
  */
 package com.github.musikk.classreader.constantpool;
 
-import com.github.musikk.classreader.ClassReader;
 
 public abstract class ConstantPoolInfo {
 
@@ -38,101 +37,6 @@ public abstract class ConstantPoolInfo {
 
 	public int getTag() {
 		return tag;
-	}
-
-	protected static ConstantPoolInfo createConstantClassInfo(
-			ClassReader classStream) {
-		int nameIndex = classStream.readShort();
-		ConstantPoolInfo cpi = new ConstantClassInfo(nameIndex);
-		return cpi;
-	}
-
-	protected static ConstantPoolInfo createConstantFieldrefInfo(
-			ClassReader classStream) {
-		int classIndex = classStream.readShort();
-		int nameAndTypeIndex = classStream.readShort();
-		ConstantPoolInfo cfr = new ConstantFieldrefInfo(classIndex,
-				nameAndTypeIndex);
-		return cfr;
-	}
-
-	protected static ConstantPoolInfo createConstantMethodrefInfo(
-			ClassReader classStream) {
-		int classIndex = classStream.readShort();
-		int nameAndTypeIndex = classStream.readShort();
-		ConstantPoolInfo cpi = new ConstantMethodrefInfo(classIndex,
-				nameAndTypeIndex);
-		return cpi;
-	}
-
-	protected static ConstantPoolInfo createInterfaceMethodrefInfo(
-			ClassReader classStream) {
-		int classIndex = classStream.readShort();
-		int nameAndTypeIndex = classStream.readShort();
-		ConstantPoolInfo cpi = new InterfaceMethodrefInfo(classIndex,
-				nameAndTypeIndex);
-		return cpi;
-	}
-
-	protected static ConstantPoolInfo createStringInfo(ClassReader classStream) {
-		int stringIndex = classStream.readShort();
-		ConstantPoolInfo cpi = new StringInfo(stringIndex);
-		return cpi;
-	}
-
-	protected static ConstantPoolInfo createIntegerInfo(ClassReader classStream) {
-		int value = classStream.readInt();
-		ConstantPoolInfo cpi = new IntegerInfo(value);
-		return cpi;
-	}
-
-	protected static ConstantPoolInfo createFloatInfo(ClassReader classStream) {
-		float value = classStream.readFloat();
-		ConstantPoolInfo cpi = new FloatInfo(value);
-		return cpi;
-	}
-
-	protected static ConstantPoolInfo createLongInfo(ClassReader classStream) {
-		long value = classStream.readLong();
-		ConstantPoolInfo cpi = new LongInfo(value);
-		return cpi;
-	}
-
-	protected static ConstantPoolInfo createDoubleInfo(ClassReader classStream) {
-		double value = classStream.readDouble();
-		ConstantPoolInfo cpi = new DoubleInfo(value);
-		return cpi;
-	}
-
-	protected static ConstantPoolInfo createNameAndTypeInfo(
-			ClassReader classStream) {
-		int nameIndex = classStream.readShort();
-		int descriptorIndex = classStream.readShort();
-		ConstantPoolInfo cpi = new NameAndTypeInfo(nameIndex, descriptorIndex);
-		return cpi;
-	}
-
-	protected static ConstantPoolInfo createUtf8Info(ClassReader classStream) {
-		String utf8 = classStream.readUtf8String();
-		ConstantPoolInfo cpi = new Utf8Info(utf8);
-		return cpi;
-	}
-
-	protected static ConstantPoolInfo createMethodHandle(ClassReader classStream) {
-		int referenceKind = classStream.readUnsignedByte();
-		int referenceIndex = classStream.readUnsignedShort();
-		return new MethodHandle(referenceKind, referenceIndex);
-	}
-
-	protected static ConstantPoolInfo createMethodType(ClassReader classStream) {
-		int descriptorIndex = classStream.readUnsignedShort();
-		return new MethodType(descriptorIndex);
-	}
-
-	protected static ConstantPoolInfo createInvokeDynamic(ClassReader classStream) {
-		int bootstrapMethodAttrIndex = classStream.readUnsignedShort();
-		int nameAndTypeIndex = classStream.readUnsignedShort();
-		return new InvokeDynamic(bootstrapMethodAttrIndex, nameAndTypeIndex);
 	}
 
 }

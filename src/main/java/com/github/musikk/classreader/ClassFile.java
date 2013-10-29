@@ -60,9 +60,9 @@ import com.github.musikk.classreader.methods.Methods;
  */
 public class ClassFile {
 
-	/**
-	 * The {@link ClassReader} used to read the contents of the file.
-	 */
+	private final ClassReaderContext classReaderContext;
+
+	@Deprecated
 	private final ClassReader classReader;
 
 	/**
@@ -119,7 +119,7 @@ public class ClassFile {
 	 *            an <code>InputStream</code> referring to the class.
 	 */
 	public ClassFile(InputStream is) {
-		this.classReader = new ClassReaderImpl(is);
+		this.classReaderContext = new ClassReaderContext(classReader = new ClassReaderImpl(is));
 		parseFile();
 	}
 
@@ -179,9 +179,7 @@ public class ClassFile {
 	}
 
 	private void readConstantPool() {
-		int constantPoolCount = classReader.readUnsignedShort();
-		constantPool = ConstantPool.createConstantPool(classReader,
-				constantPoolCount);
+		constantPool = ConstantPool.createConstantPool(classReaderContext);
 	}
 
 	private void readMinor() {

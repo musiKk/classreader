@@ -26,10 +26,12 @@
  */
 package com.github.musikk.classreader.constantpool;
 
+import com.github.musikk.classreader.ClassReader;
+import com.github.musikk.classreader.ClassReaderContext;
+
 public class ConstantFieldrefInfo extends ConstantPoolInfo {
 
 	private final int classIndex;
-
 	private final int nameAndTypeIndex;
 
 	public ConstantFieldrefInfo(int classIndex, int nameAndTypeIndex) {
@@ -43,6 +45,14 @@ public class ConstantFieldrefInfo extends ConstantPoolInfo {
 
 	public int getNameAndTypeIndex() {
 		return nameAndTypeIndex;
+	}
+
+	static ConstantFieldrefInfo createConstantFieldrefInfo(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
+
+		int classIndex = reader.readShort();
+		int nameAndTypeIndex = reader.readShort();
+		return new ConstantFieldrefInfo(classIndex, nameAndTypeIndex);
 	}
 
 }
