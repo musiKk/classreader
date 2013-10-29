@@ -26,20 +26,16 @@
  */
 package com.github.musikk.classreader.constantpool;
 
-import com.github.musikk.classreader.ClassReaderContext;
+public class MethodType extends ConstantPoolInfo {
 
-public class MethodType extends ConstantPoolInfo<MethodType> {
+	private final int descriptorIndex;
 
-	private int descriptorIndex;
+	public MethodType(int descriptorIndex) {
+		this.descriptorIndex = descriptorIndex;
+	}
 
 	public int getDescriptorIndex() {
 		return descriptorIndex;
-	}
-
-	@Override
-	public MethodType read(ClassReaderContext ctxt) {
-		descriptorIndex = ctxt.getClassReader().readUnsignedShort();
-		return this;
 	}
 
 	@Override

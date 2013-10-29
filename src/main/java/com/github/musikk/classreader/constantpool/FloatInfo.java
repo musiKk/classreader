@@ -26,20 +26,16 @@
  */
 package com.github.musikk.classreader.constantpool;
 
-import com.github.musikk.classreader.ClassReaderContext;
+public class FloatInfo extends ConstantPoolInfo {
 
-public class FloatInfo extends ConstantPoolInfo<FloatInfo> {
+	private final float value;
 
-	private float value;
+	public FloatInfo(float value) {
+		this.value = value;
+	}
 
 	public float getValue() {
 		return value;
-	}
-
-	@Override
-	public FloatInfo read(ClassReaderContext ctxt) {
-		value = ctxt.getClassReader().readFloat();
-		return this;
 	}
 
 }

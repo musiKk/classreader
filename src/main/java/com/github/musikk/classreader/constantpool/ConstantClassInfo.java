@@ -26,20 +26,16 @@
  */
 package com.github.musikk.classreader.constantpool;
 
-import com.github.musikk.classreader.ClassReaderContext;
+public class ConstantClassInfo extends ConstantPoolInfo {
 
-public class ConstantClassInfo extends ConstantPoolInfo<ConstantClassInfo> {
+	private final int nameIndex;
 
-	private int nameIndex;
+	public ConstantClassInfo(int nameIndex) {
+		this.nameIndex = nameIndex;
+	}
 
 	public int getNameIndex() {
 		return nameIndex;
-	}
-
-	@Override
-	public ConstantClassInfo read(ClassReaderContext ctxt) {
-		nameIndex = ctxt.getClassReader().readUnsignedShort();
-		return this;
 	}
 
 }

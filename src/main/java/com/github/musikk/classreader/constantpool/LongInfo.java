@@ -26,20 +26,17 @@
  */
 package com.github.musikk.classreader.constantpool;
 
-import com.github.musikk.classreader.ClassReaderContext;
+public class LongInfo extends ConstantPoolInfo {
 
-public class LongInfo extends ConstantPoolInfo<LongInfo> {
+	private final long value;
 
-	private long value;
+	public LongInfo(long value) {
+		super();
+		this.value = value;
+	}
 
 	public long getValue() {
 		return value;
-	}
-
-	@Override
-	public LongInfo read(ClassReaderContext ctxt) {
-		value = ctxt.getClassReader().readLong();
-		return this;
 	}
 
 }

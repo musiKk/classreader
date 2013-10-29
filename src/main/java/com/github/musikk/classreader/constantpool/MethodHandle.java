@@ -26,13 +26,15 @@
  */
 package com.github.musikk.classreader.constantpool;
 
-import com.github.musikk.classreader.ClassReader;
-import com.github.musikk.classreader.ClassReaderContext;
+public class MethodHandle extends ConstantPoolInfo {
 
-public class MethodHandle extends ConstantPoolInfo<MethodHandle> {
+	private final int referenceKind;
+	private final int referenceIndex;
 
-	private int referenceKind;
-	private int referenceIndex;
+	public MethodHandle(int referenceKind, int referenceIndex) {
+		this.referenceKind = referenceKind;
+		this.referenceIndex = referenceIndex;
+	}
 
 	public int getReferenceKind() {
 		return referenceKind;
@@ -40,16 +42,6 @@ public class MethodHandle extends ConstantPoolInfo<MethodHandle> {
 
 	public int getReferenceIndex() {
 		return referenceIndex;
-	}
-
-	@Override
-	public MethodHandle read(ClassReaderContext ctxt) {
-		ClassReader reader = ctxt.getClassReader();
-
-		referenceKind = reader.readUnsignedShort();
-		referenceIndex = reader.readUnsignedShort();
-
-		return this;
 	}
 
 	@Override

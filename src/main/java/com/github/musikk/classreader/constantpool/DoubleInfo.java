@@ -26,20 +26,17 @@
  */
 package com.github.musikk.classreader.constantpool;
 
-import com.github.musikk.classreader.ClassReaderContext;
+public class DoubleInfo extends ConstantPoolInfo {
 
-public class DoubleInfo extends ConstantPoolInfo<DoubleInfo> {
+	private final double value;
 
-	private double value;
+	public DoubleInfo(double value) {
+		super();
+		this.value = value;
+	}
 
 	public double getValue() {
 		return value;
-	}
-
-	@Override
-	public DoubleInfo read(ClassReaderContext ctxt) {
-		value = ctxt.getClassReader().readDouble();
-		return this;
 	}
 
 }

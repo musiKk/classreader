@@ -26,13 +26,16 @@
  */
 package com.github.musikk.classreader.constantpool;
 
-import com.github.musikk.classreader.ClassReader;
-import com.github.musikk.classreader.ClassReaderContext;
+public class ConstantMethodrefInfo extends ConstantPoolInfo {
 
-public class ConstantMethodrefInfo extends ConstantPoolInfo<ConstantMethodrefInfo> {
+	private final int classIndex;
 
-	private int classIndex;
-	private int nameAndTypeIndex;
+	private final int nameAndTypeIndex;
+
+	public ConstantMethodrefInfo(int classIndex, int nameAndTypeIndex) {
+		this.classIndex = classIndex;
+		this.nameAndTypeIndex = nameAndTypeIndex;
+	}
 
 	public int getClassIndex() {
 		return classIndex;
@@ -40,16 +43,6 @@ public class ConstantMethodrefInfo extends ConstantPoolInfo<ConstantMethodrefInf
 
 	public int getNameAndTypeIndex() {
 		return nameAndTypeIndex;
-	}
-
-	@Override
-	public ConstantMethodrefInfo read(ClassReaderContext ctxt) {
-		ClassReader reader = ctxt.getClassReader();
-
-		classIndex = reader.readUnsignedShort();
-		nameAndTypeIndex = reader.readUnsignedShort();
-
-		return this;
 	}
 
 }

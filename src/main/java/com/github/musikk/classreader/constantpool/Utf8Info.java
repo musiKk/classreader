@@ -26,20 +26,17 @@
  */
 package com.github.musikk.classreader.constantpool;
 
-import com.github.musikk.classreader.ClassReaderContext;
+public class Utf8Info extends ConstantPoolInfo {
 
-public class Utf8Info extends ConstantPoolInfo<Utf8Info> {
+	private final String value;
 
-	private String value;
+	public Utf8Info(String value) {
+		super();
+		this.value = value;
+	}
 
 	public String getValue() {
 		return value;
-	}
-
-	@Override
-	public Utf8Info read(ClassReaderContext ctxt) {
-		value = ctxt.getClassReader().readUtf8String();
-		return this;
 	}
 
 	@Override

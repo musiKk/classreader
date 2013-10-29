@@ -24,29 +24,21 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.musikk.classreader;
+package com.github.musikk.classreader.constantpool;
 
-import com.github.musikk.classreader.constantpool.ConstantPool;
+// TODO: is this a good idea?
+public enum ConstantPoolInfoTag {
 
-public class ClassReaderContext {
+	CLASS((byte) 7), FIELDREF((byte) 9);
 
-	private final ClassReader classReader;
-	private ConstantPool constantPool;
+	private byte value;
 
-	public ClassReaderContext(ClassReader classReader) {
-		this.classReader = classReader;
+	private ConstantPoolInfoTag(byte value) {
+		this.value = value;
 	}
 
-	public ConstantPool getConstantPool() {
-		return constantPool;
-	}
-
-	public void setConstantPool(ConstantPool constantPool) {
-		this.constantPool = constantPool;
-	}
-
-	public ClassReader getClassReader() {
-		return classReader;
+	public byte getValue() {
+		return value;
 	}
 
 }
