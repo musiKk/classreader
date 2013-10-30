@@ -30,16 +30,9 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.github.musikk.classreader.constantpool.ConstantPool;
-
-
-
 public class ClassReaderImpl implements ClassReader {
 
 	private final InputStream is;
-
-	private ConstantPool constantPool;
-
 	private int position;
 
 	public ClassReaderImpl(InputStream is) {
@@ -145,19 +138,6 @@ public class ClassReaderImpl implements ClassReader {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	@Override
-	public void setConstantPool(ConstantPool constantPool) {
-		this.constantPool = constantPool;
-	}
-
-	@Override
-	public ConstantPool getConstantPool() {
-		if (constantPool == null) {
-			throw new IllegalStateException("constant pool not yet initialized");
-		}
-		return constantPool;
 	}
 
 	@Override

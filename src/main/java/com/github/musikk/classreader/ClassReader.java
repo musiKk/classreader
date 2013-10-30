@@ -26,7 +26,6 @@
  */
 package com.github.musikk.classreader;
 
-import com.github.musikk.classreader.constantpool.ConstantPool;
 
 /**
  * A <code>ClassReader</code> provides methods for reading from a stream that
@@ -133,25 +132,6 @@ public interface ClassReader {
 	 * @return the UTF-8 {@code String} value
 	 */
 	String readUtf8String();
-
-	/**
-	 * Saves the current {@link ConstantPool} to provide an easy way to pass it
-	 * around.
-	 *
-	 * @param constantPool
-	 *            the {@code ConstantPool} to save
-	 */
-	@Deprecated
-	void setConstantPool(ConstantPool constantPool);
-
-	/**
-	 * Retrieves the previously saved {@link ConstantPool}.
-	 *
-	 * @return the {@code ConstantPool} or {@code null} if no {@code
-	 *         ConstantPool} has yet been saved.
-	 */
-	@Deprecated
-	ConstantPool getConstantPool();
 
 	/**
 	 * The position in the stream this {@code ClassReader} is currently at.

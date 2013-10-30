@@ -60,9 +60,6 @@ import com.github.musikk.classreader.methods.Methods;
  */
 public class ClassFile {
 
-	private final ClassReaderContext classReaderContext;
-
-	@Deprecated
 	private final ClassReader classReader;
 
 	/**
@@ -119,42 +116,41 @@ public class ClassFile {
 	 *            an <code>InputStream</code> referring to the class.
 	 */
 	public ClassFile(InputStream is) {
-		this.classReaderContext = new ClassReaderContext(classReader = new ClassReaderImpl(is));
-		parseFile();
+		classReader = new ClassReaderImpl(is);
+		parseFile(new ClassReaderContext(classReader));
 	}
 
 	/**
 	 * Starts the parsing process. Just a bunch of delegates.
+	 * @param classReaderContext
 	 */
-	private void parseFile() {
+	private void parseFile(ClassReaderContext ctxt) {
 		checkMagic();
-		readMinor();
-		readMajor();
-		readConstantPool();
-		classReader.setConstantPool(this.constantPool);
+		readVersion();
+		readConstantPool(ctxt);
 		readFlags();
 		readThisClassIndex();
 		readSuperClassIndex();
-		readInterfaces();
-		readFields();
-		readMethods();
-		readAttributes();
+		readInterfaces(ctxt);
+		readFields(ctxt);
+		readMethods(ctxt);
+		readAttributes(ctxt);
 	}
 
-	private void readAttributes() {
-		this.attributes = Attributes.getAttributes(classReaderContext);
+	private void readAttributes(ClassReaderContext ctxt) {
+		this.attributes = Attributes.getAttributes(ctxt);
 	}
 
-	private void readMethods() {
-		this.methods = Methods.getMethods(classReaderContext);
+	private void readMethods(ClassReaderContext ctxt) {
+		this.methods = Methods.getMethods(ctxt);
 	}
 
-	private void readFields() {
-		this.fields = Fields.getFields(classReaderContext);
+	private void readFields(ClassReaderContext ctxt) {
+		this.fields = Fields.getFields(ctxt);
 	}
 
-	private void readInterfaces() {
-		this.interfaces = Interfaces.getInterfaces(classReaderContext);
+	private void readInterfaces(ClassReaderContext ctxt) {
+		this.interfaces = Interfaces.getInterfaces(ctxt);
 	}
 
 	private void readSuperClassIndex() {
@@ -173,15 +169,12 @@ public class ClassFile {
 		modifiers = Modifier.readModifiers(accessFlags, Modifier.Target.CLASS);
 	}
 
-	private void readConstantPool() {
-		constantPool = ConstantPool.createConstantPool(classReaderContext);
+	private void readConstantPool(ClassReaderContext ctxt) {
+		constantPool = ConstantPool.createConstantPool(ctxt);
 	}
 
-	private void readMinor() {
+	private void readVersion() {
 		minor = classReader.readUnsignedShort();
-	}
-
-	private void readMajor() {
 		major = classReader.readUnsignedShort();
 	}
 
