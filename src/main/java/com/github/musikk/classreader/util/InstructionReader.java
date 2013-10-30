@@ -37,8 +37,6 @@ import com.github.musikk.classreader.instructions.Instruction;
 import com.github.musikk.classreader.instructions.InstructionFactory;
 import com.github.musikk.classreader.instructions.Operand;
 
-
-
 public class InstructionReader {
 
 	private final static int OPCODE_LOOKUPSWITCH = 0xab;
@@ -174,7 +172,7 @@ public class InstructionReader {
 
 				int affectedOpcode = classReader.readUnsignedByte();
 
-				int index = classReader.readShort();
+				int index = classReader.readUnsignedShort();
 
 				operands.add(new Operand("opcode", affectedOpcode));
 				size++;
@@ -184,7 +182,7 @@ public class InstructionReader {
 				if (OPCODE_WIDE_FORMAT_1.contains(affectedOpcode)) {
 					// need nothing more
 				} else if (OPCODE_WIDE_FORMAT_2.contains(affectedOpcode)) {
-					int constant = classReader.readShort();
+					int constant = classReader.readUnsignedShort();
 					operands.add(new Operand("constant", constant));
 					size += 2;
 				} else {

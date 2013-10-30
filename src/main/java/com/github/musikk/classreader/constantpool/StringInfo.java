@@ -41,7 +41,7 @@ public class StringInfo extends ConstantPoolInfo {
 	}
 
 	static StringInfo createStringInfo(ClassReaderContext ctxt) {
-		int stringIndex = ctxt.getClassReader().readShort();
+		int stringIndex = ctxt.getClassReader().readUnsignedShort();
 		return new StringInfo(stringIndex);
 	}
 

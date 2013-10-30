@@ -84,7 +84,7 @@ public abstract class ElementValue {
 		}
 
 		private static Constant getConstant(char tag, ClassReaderContext ctxt) {
-			return new Constant(tag, ctxt.getClassReader().readShort());
+			return new Constant(tag, ctxt.getClassReader().readUnsignedShort());
 		}
 
 		public int getConstValueIndex() {

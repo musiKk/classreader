@@ -41,7 +41,7 @@ public class ConstantValueAttribute extends AttributeInfo {
 	}
 
 	public static ConstantValueAttribute getConstantValue(ClassReaderContext ctxt) {
-		int constantValueIndex = ctxt.getClassReader().readShort();
+		int constantValueIndex = ctxt.getClassReader().readUnsignedShort();
 
 		return new ConstantValueAttribute(constantValueIndex);
 

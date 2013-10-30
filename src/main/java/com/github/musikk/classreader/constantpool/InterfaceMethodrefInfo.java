@@ -50,8 +50,9 @@ public class InterfaceMethodrefInfo extends ConstantPoolInfo {
 	static InterfaceMethodrefInfo createInterfaceMethodrefInfo(ClassReaderContext ctxt) {
 		ClassReader reader = ctxt.getClassReader();
 
-		int classIndex = reader.readShort();
-		int nameAndTypeIndex = reader.readShort();
+		int classIndex = reader.readUnsignedShort();
+		int nameAndTypeIndex = reader.readUnsignedShort();
+
 		return new InterfaceMethodrefInfo(classIndex, nameAndTypeIndex);
 	}
 

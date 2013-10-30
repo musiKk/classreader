@@ -41,7 +41,7 @@ public class ConstantClassInfo extends ConstantPoolInfo {
 	}
 
 	static ConstantClassInfo createConstantClassInfo(ClassReaderContext ctxt) {
-		int nameIndex = ctxt.getClassReader().readShort();
+		int nameIndex = ctxt.getClassReader().readUnsignedShort();
 		return new ConstantClassInfo(nameIndex);
 	}
 

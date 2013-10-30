@@ -85,9 +85,9 @@ public class InnerClass {
 	protected static InnerClass getInnerClass(ClassReaderContext ctxt) {
 		ClassReader reader = ctxt.getClassReader();
 
-		int innerClassInfoIndex = reader.readShort();
-		int outerClassInfoIndex = reader.readShort();
-		int innerNameIndex = reader.readShort();
+		int innerClassInfoIndex = reader.readUnsignedShort();
+		int outerClassInfoIndex = reader.readUnsignedShort();
+		int innerNameIndex = reader.readUnsignedShort();
 		int innerClassAccessFlags = reader.readShort();
 
 		return new InnerClass(innerClassInfoIndex, outerClassInfoIndex, innerNameIndex, innerClassAccessFlags);

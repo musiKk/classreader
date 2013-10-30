@@ -50,8 +50,8 @@ public class ConstantMethodrefInfo extends ConstantPoolInfo {
 	static ConstantMethodrefInfo createConstantMethodrefInfo(ClassReaderContext ctxt) {
 		ClassReader reader = ctxt.getClassReader();
 
-		int classIndex = reader.readShort();
-		int nameAndTypeIndex = reader.readShort();
+		int classIndex = reader.readUnsignedShort();
+		int nameAndTypeIndex = reader.readUnsignedShort();
 		return new ConstantMethodrefInfo(classIndex, nameAndTypeIndex);
 	}
 

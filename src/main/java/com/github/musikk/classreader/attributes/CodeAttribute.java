@@ -69,8 +69,8 @@ public class CodeAttribute extends AttributeInfo {
 	protected static CodeAttribute getCode(ClassReaderContext ctxt) {
 		ClassReader reader = ctxt.getClassReader();
 
-		int maxStack = reader.readShort();
-		int maxLocals = reader.readShort();
+		int maxStack = reader.readUnsignedShort();
+		int maxLocals = reader.readUnsignedShort();
 
 		Code code = Code.getCode(ctxt);
 		ExceptionTable exceptionTable = ExceptionTable.getExceptionTable(ctxt);

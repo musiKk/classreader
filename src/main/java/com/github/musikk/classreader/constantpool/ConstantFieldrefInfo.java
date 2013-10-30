@@ -50,8 +50,8 @@ public class ConstantFieldrefInfo extends ConstantPoolInfo {
 	static ConstantFieldrefInfo createConstantFieldrefInfo(ClassReaderContext ctxt) {
 		ClassReader reader = ctxt.getClassReader();
 
-		int classIndex = reader.readShort();
-		int nameAndTypeIndex = reader.readShort();
+		int classIndex = reader.readUnsignedShort();
+		int nameAndTypeIndex = reader.readUnsignedShort();
 		return new ConstantFieldrefInfo(classIndex, nameAndTypeIndex);
 	}
 

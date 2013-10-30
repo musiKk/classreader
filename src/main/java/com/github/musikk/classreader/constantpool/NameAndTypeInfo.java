@@ -50,8 +50,9 @@ public class NameAndTypeInfo extends ConstantPoolInfo {
 	static NameAndTypeInfo createNameAndTypeInfo(ClassReaderContext ctxt) {
 		ClassReader reader = ctxt.getClassReader();
 
-		int nameIndex = reader.readShort();
-		int descriptorIndex = reader.readShort();
+		int nameIndex = reader.readUnsignedShort();
+		int descriptorIndex = reader.readUnsignedShort();
+
 		return new NameAndTypeInfo(nameIndex, descriptorIndex);
 	}
 

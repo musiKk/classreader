@@ -62,10 +62,10 @@ public class ExceptionTableEntry {
 	protected static ExceptionTableEntry getExceptionTableEntry(ClassReaderContext ctxt) {
 		ClassReader reader = ctxt.getClassReader();
 
-		int startPc = reader.readShort();
-		int endPc = reader.readShort();
-		int handlerPc = reader.readShort();
-		int catchType = reader.readShort();
+		int startPc = reader.readUnsignedShort();
+		int endPc = reader.readUnsignedShort();
+		int handlerPc = reader.readUnsignedShort();
+		int catchType = reader.readUnsignedShort();
 
 		return new ExceptionTableEntry(startPc, endPc, handlerPc, catchType);
 
