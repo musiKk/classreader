@@ -26,34 +26,32 @@
  */
 package com.github.musikk.classreader.attributes;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.github.musikk.classreader.ClassReader;
-import com.github.musikk.classreader.constantpool.ConstantPool;
-import com.github.musikk.classreader.util.StreamUtils;
+import com.github.musikk.classreader.ClassReaderContext;
 
 public class LocalVariableTableAttribute extends AttributeInfo {
 
-	private final LocalVariableTableEntry[] localVariableTableEntries;
+	private final List<LocalVariableTableEntry> localVariableTableEntries;
 
-	private LocalVariableTableAttribute(
-			LocalVariableTableEntry[] localVariableTableEntries) {
+	private LocalVariableTableAttribute(List<LocalVariableTableEntry> localVariableTableEntries) {
 		this.localVariableTableEntries = localVariableTableEntries;
 	}
 
-	public LocalVariableTableEntry[] getLocalVariableTableEntries() {
-		return localVariableTableEntries;
+	public List<LocalVariableTableEntry> getLocalVariableTableEntries() {
+		return Collections.unmodifiableList(localVariableTableEntries);
 	}
 
-	protected static LocalVariableTableAttribute getLocalVariableTableAttribute(
-			int attributeLength, byte[] info, ConstantPool constantPool) {
+	protected static LocalVariableTableAttribute getLocalVariableTableAttribute(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
 
-		ClassReader classReader = StreamUtils.createClassReader(info,
-				constantPool);
-
-		int localVariableTableLength = classReader.readShort();
-		LocalVariableTableEntry[] localVariableTableEntries = new LocalVariableTableEntry[localVariableTableLength];
+		int localVariableTableLength = reader.readUnsignedShort();
+		List<LocalVariableTableEntry> localVariableTableEntries = new ArrayList<>(localVariableTableLength);
 		for (int i = 0; i < localVariableTableLength; i++) {
-			localVariableTableEntries[i] = LocalVariableTableEntry
-					.getLocalVariableTableEntry(classReader);
+			localVariableTableEntries.add(LocalVariableTableEntry.getLocalVariableTableEntry(ctxt));
 		}
 
 		return new LocalVariableTableAttribute(localVariableTableEntries);

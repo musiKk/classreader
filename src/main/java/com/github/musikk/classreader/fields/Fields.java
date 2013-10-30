@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.github.musikk.classreader.ClassReader;
+import com.github.musikk.classreader.ClassReaderContext;
 
 public class Fields {
 
@@ -44,12 +45,14 @@ public class Fields {
 		return Collections.unmodifiableList(fieldInfos);
 	}
 
-	public static Fields getFields(ClassReader classStream, int fieldsCount) {
+	public static Fields getFields(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
 
+		int fieldsCount = reader.readUnsignedShort();
 		List<FieldInfo> fieldInfos = new ArrayList<>(fieldsCount);
 
 		for (int i = 0; i < fieldsCount; i++) {
-			fieldInfos.add(FieldInfo.getFieldInfo(classStream));
+			fieldInfos.add(FieldInfo.getFieldInfo(ctxt));
 		}
 
 		return new Fields(fieldInfos);

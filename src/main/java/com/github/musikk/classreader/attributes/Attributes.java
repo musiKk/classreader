@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.github.musikk.classreader.ClassReader;
+import com.github.musikk.classreader.ClassReaderContext;
 
 public class Attributes {
 
@@ -44,12 +45,13 @@ public class Attributes {
 		return Collections.unmodifiableList(attributeInfos);
 	}
 
-	public static Attributes getAttributes(ClassReader classStream,
-			int attributesCount) {
+	public static Attributes getAttributes(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
 
+		int attributesCount = reader.readUnsignedShort();
 		List<AttributeInfo> attributeInfos = new ArrayList<>(attributesCount);
 		for (int i = 0; i < attributesCount; i++) {
-			attributeInfos.add(AttributeInfo.getAttributeInfo(classStream));
+			attributeInfos.add(AttributeInfo.getAttributeInfo(ctxt));
 		}
 		return new Attributes(attributeInfos);
 

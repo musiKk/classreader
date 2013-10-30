@@ -103,7 +103,7 @@ public class InstructionReader {
 				int padding = ensureZeroPadding(classReader, 4);
 				size += padding;
 
-				List<Operand> operands = new ArrayList<Operand>();
+				List<Operand> operands = new ArrayList<>();
 
 				int _default = classReader.readInt();
 				int npairs = classReader.readInt();
@@ -138,7 +138,7 @@ public class InstructionReader {
 				int padding = ensureZeroPadding(classReader, 4);
 				size += padding;
 
-				List<Operand> operands = new ArrayList<Operand>();
+				List<Operand> operands = new ArrayList<>();
 
 				int defaultByte = classReader.readInt();
 				int lowByte = classReader.readInt();
@@ -170,7 +170,7 @@ public class InstructionReader {
 
 				int size = 1;
 
-				List<Operand> operands = new ArrayList<Operand>();
+				List<Operand> operands = new ArrayList<>();
 
 				int affectedOpcode = classReader.readUnsignedByte();
 
@@ -258,7 +258,7 @@ public class InstructionReader {
 			return new Operand[] {};
 		}
 
-		List<Operand> operands = new ArrayList<Operand>();
+		List<Operand> operands = new ArrayList<>();
 
 		for (int i = 0; i < types.length; i++) {
 			Operand operand = getOperand(types[i], names[i], classReader);

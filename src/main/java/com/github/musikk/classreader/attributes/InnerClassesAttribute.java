@@ -26,32 +26,32 @@
  */
 package com.github.musikk.classreader.attributes;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.github.musikk.classreader.ClassReader;
-import com.github.musikk.classreader.constantpool.ConstantPool;
-import com.github.musikk.classreader.util.StreamUtils;
+import com.github.musikk.classreader.ClassReaderContext;
 
 public class InnerClassesAttribute extends AttributeInfo {
 
-	private final InnerClass[] innerClasses;
+	private final List<InnerClass> innerClasses;
 
-	private InnerClassesAttribute(InnerClass[] innerClasses) {
+	private InnerClassesAttribute(List<InnerClass> innerClasses) {
 		this.innerClasses = innerClasses;
 	}
 
-	public InnerClass[] getInnerClasses() {
-		return innerClasses;
+	public List<InnerClass> getInnerClasses() {
+		return Collections.unmodifiableList(innerClasses);
 	}
 
-	protected static InnerClassesAttribute getInnerClassesAttribute(
-			int attributeLength, byte[] info, ConstantPool constantPool) {
+	protected static InnerClassesAttribute getInnerClassesAttribute(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
 
-		ClassReader classReader = StreamUtils.createClassReader(info,
-				constantPool);
-
-		int numberOfClasses = classReader.readShort();
-		InnerClass[] innerClasses = new InnerClass[numberOfClasses];
+		int numberOfClasses = reader.readUnsignedShort();
+		List<InnerClass> innerClasses = new ArrayList<>(numberOfClasses);
 		for (int i = 0; i < numberOfClasses; i++) {
-			innerClasses[i] = InnerClass.getInnerClass(classReader);
+			innerClasses.add(InnerClass.getInnerClass(ctxt));
 		}
 
 		return new InnerClassesAttribute(innerClasses);

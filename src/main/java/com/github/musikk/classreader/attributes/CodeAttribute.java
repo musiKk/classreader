@@ -27,8 +27,7 @@
 package com.github.musikk.classreader.attributes;
 
 import com.github.musikk.classreader.ClassReader;
-import com.github.musikk.classreader.constantpool.ConstantPool;
-import com.github.musikk.classreader.util.StreamUtils;
+import com.github.musikk.classreader.ClassReaderContext;
 
 public class CodeAttribute extends AttributeInfo {
 
@@ -67,30 +66,17 @@ public class CodeAttribute extends AttributeInfo {
 		return attributes;
 	}
 
-	protected static CodeAttribute getCode(int attributeLength, byte[] info,
-			ConstantPool constantPool) {
+	protected static CodeAttribute getCode(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
 
-		ClassReader classReader = StreamUtils.createClassReader(info,
-				constantPool);
+		int maxStack = reader.readShort();
+		int maxLocals = reader.readShort();
 
-		int maxStack = classReader.readShort();
-		int maxLocals = classReader.readShort();
-		int codeLength = classReader.readInt();
+		Code code = Code.getCode(ctxt);
+		ExceptionTable exceptionTable = ExceptionTable.getExceptionTable(ctxt);
+		Attributes attributes = Attributes.getAttributes(ctxt);
 
-		byte[] codeBytes = new byte[codeLength];
-		classReader.readBytesFully(codeBytes);
-		Code code = Code.getCode(codeBytes, constantPool);
-
-		int exceptionTableLength = classReader.readShort();
-		ExceptionTable exceptionTable = ExceptionTable.getExceptionTable(
-				classReader, exceptionTableLength);
-
-		int attributesCount = classReader.readShort();
-		Attributes attributes = Attributes.getAttributes(classReader,
-				attributesCount);
-
-		return new CodeAttribute(maxStack, maxLocals, code, exceptionTable,
-				attributes);
+		return new CodeAttribute(maxStack, maxLocals, code, exceptionTable, attributes);
 	}
 
 }

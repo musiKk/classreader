@@ -42,12 +42,14 @@ public class Interfaces {
 		return Collections.unmodifiableList(interfaceIndexes);
 	}
 
-	public static Interfaces getInterfaces(ClassReader classStream, int interfacesCount) {
+	public static Interfaces getInterfaces(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
 
+		int interfacesCount = reader.readUnsignedShort();
 		List<Integer> interfaceIndexes = new ArrayList<>(interfacesCount);
 
 		for (int i = 0; i < interfacesCount; i++) {
-			interfaceIndexes.add(classStream.readUnsignedShort());
+			interfaceIndexes.add(reader.readUnsignedShort());
 		}
 
 		return new Interfaces(interfaceIndexes);

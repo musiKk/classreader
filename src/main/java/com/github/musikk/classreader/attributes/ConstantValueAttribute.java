@@ -26,9 +26,7 @@
  */
 package com.github.musikk.classreader.attributes;
 
-import com.github.musikk.classreader.ClassReader;
-import com.github.musikk.classreader.constantpool.ConstantPool;
-import com.github.musikk.classreader.util.StreamUtils;
+import com.github.musikk.classreader.ClassReaderContext;
 
 public class ConstantValueAttribute extends AttributeInfo {
 
@@ -42,16 +40,8 @@ public class ConstantValueAttribute extends AttributeInfo {
 		return constantValueIndex;
 	}
 
-	public static ConstantValueAttribute getConstantValue(int attributeLength,
-			byte[] info, ConstantPool constantPool) {
-
-		if (attributeLength != 2) {
-			throw new IllegalArgumentException(
-					"attributeLength must be 2 but was " + attributeLength);
-		}
-
-		ClassReader cr = StreamUtils.createClassReader(info, constantPool);
-		int constantValueIndex = cr.readShort();
+	public static ConstantValueAttribute getConstantValue(ClassReaderContext ctxt) {
+		int constantValueIndex = ctxt.getClassReader().readShort();
 
 		return new ConstantValueAttribute(constantValueIndex);
 

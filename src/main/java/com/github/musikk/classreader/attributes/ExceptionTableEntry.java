@@ -27,6 +27,7 @@
 package com.github.musikk.classreader.attributes;
 
 import com.github.musikk.classreader.ClassReader;
+import com.github.musikk.classreader.ClassReaderContext;
 
 public class ExceptionTableEntry {
 
@@ -35,8 +36,7 @@ public class ExceptionTableEntry {
 	private final int handlerPc;
 	private final int catchType;
 
-	public ExceptionTableEntry(int startPc, int endPc, int handlerPc,
-			int catchType) {
+	public ExceptionTableEntry(int startPc, int endPc, int handlerPc, int catchType) {
 		this.startPc = startPc;
 		this.endPc = endPc;
 		this.handlerPc = handlerPc;
@@ -59,13 +59,13 @@ public class ExceptionTableEntry {
 		return catchType;
 	}
 
-	protected static ExceptionTableEntry getExceptionTableEntry(
-			ClassReader classReader) {
+	protected static ExceptionTableEntry getExceptionTableEntry(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
 
-		int startPc = classReader.readShort();
-		int endPc = classReader.readShort();
-		int handlerPc = classReader.readShort();
-		int catchType = classReader.readShort();
+		int startPc = reader.readShort();
+		int endPc = reader.readShort();
+		int handlerPc = reader.readShort();
+		int catchType = reader.readShort();
 
 		return new ExceptionTableEntry(startPc, endPc, handlerPc, catchType);
 

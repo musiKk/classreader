@@ -26,34 +26,32 @@
  */
 package com.github.musikk.classreader.attributes;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.github.musikk.classreader.ClassReader;
-import com.github.musikk.classreader.constantpool.ConstantPool;
-import com.github.musikk.classreader.util.StreamUtils;
+import com.github.musikk.classreader.ClassReaderContext;
 
 public class LineNumberTableAttribute extends AttributeInfo {
 
-	private final LineNumberTableEntry[] lineNumberTableEntries;
+	private final List<LineNumberTableEntry> lineNumberTableEntries;
 
-	protected LineNumberTableAttribute(
-			LineNumberTableEntry[] lineNumberTableEntries) {
+	protected LineNumberTableAttribute(List<LineNumberTableEntry> lineNumberTableEntries) {
 		this.lineNumberTableEntries = lineNumberTableEntries;
 	}
 
-	public LineNumberTableEntry[] getLineNumberTableEntries() {
-		return lineNumberTableEntries;
+	public List<LineNumberTableEntry> getLineNumberTableEntries() {
+		return Collections.unmodifiableList(lineNumberTableEntries);
 	}
 
-	protected static LineNumberTableAttribute getLineNumberTableAttribute(
-			int attributeLength, byte[] info, ConstantPool constantPool) {
+	protected static LineNumberTableAttribute getLineNumberTableAttribute(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
 
-		ClassReader classReader = StreamUtils.createClassReader(info,
-				constantPool);
-
-		int lineNumberTableLength = classReader.readShort();
-		LineNumberTableEntry[] lineNumberTableEntries = new LineNumberTableEntry[lineNumberTableLength];
+		int lineNumberTableLength = reader.readUnsignedShort();
+		List<LineNumberTableEntry> lineNumberTableEntries = new ArrayList<>(lineNumberTableLength);
 		for (int i = 0; i < lineNumberTableLength; i++) {
-			lineNumberTableEntries[i] = LineNumberTableEntry
-					.getLineNumberTableEntry(classReader);
+			lineNumberTableEntries.add(LineNumberTableEntry.getLineNumberTableEntry(ctxt));
 		}
 
 		return new LineNumberTableAttribute(lineNumberTableEntries);

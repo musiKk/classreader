@@ -26,32 +26,32 @@
  */
 package com.github.musikk.classreader.attributes;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.github.musikk.classreader.ClassReader;
-import com.github.musikk.classreader.constantpool.ConstantPool;
-import com.github.musikk.classreader.util.StreamUtils;
+import com.github.musikk.classreader.ClassReaderContext;
 
 public class ExceptionAttribute extends AttributeInfo {
 
-	private final int[] exceptionIndexTable;
+	private final List<Integer> exceptionIndexTable;
 
-	private ExceptionAttribute(int[] exceptionIndexTable) {
+	private ExceptionAttribute(List<Integer> exceptionIndexTable) {
 		this.exceptionIndexTable = exceptionIndexTable;
 	}
 
-	public int[] getExceptionIndexTable() {
-		return exceptionIndexTable;
+	public List<Integer> getExceptionIndexTable() {
+		return Collections.unmodifiableList(exceptionIndexTable);
 	}
 
-	protected static ExceptionAttribute getExceptionAttribute(
-			int attributeLength, byte[] info, ConstantPool constantPool) {
+	protected static ExceptionAttribute getExceptionAttribute(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
 
-		ClassReader classReader = StreamUtils.createClassReader(info,
-				constantPool);
-
-		int numberOfExceptions = classReader.readShort();
-		int[] exceptionIndexTable = new int[numberOfExceptions];
+		int numberOfExceptions = reader.readUnsignedShort();
+		List<Integer> exceptionIndexTable = new ArrayList<>(numberOfExceptions);
 		for (int i = 0; i < numberOfExceptions; i++) {
-			exceptionIndexTable[i] = classReader.readShort();
+			exceptionIndexTable.add(reader.readUnsignedShort());
 		}
 
 		return new ExceptionAttribute(exceptionIndexTable);

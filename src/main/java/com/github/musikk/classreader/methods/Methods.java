@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.github.musikk.classreader.ClassReader;
+import com.github.musikk.classreader.ClassReaderContext;
 
 public class Methods {
 
@@ -44,11 +45,13 @@ public class Methods {
 		return Collections.unmodifiableList(methodInfos);
 	}
 
-	public static Methods getMethods(ClassReader classStream, int methodsCount) {
+	public static Methods getMethods(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
 
-		List<MethodInfo> methodInfos = new ArrayList<MethodInfo>(methodsCount);
+		int methodsCount = reader.readUnsignedShort();
+		List<MethodInfo> methodInfos = new ArrayList<>(methodsCount);
 		for (int i = 0; i < methodsCount; i++) {
-			methodInfos.add(MethodInfo.getMethodInfo(classStream));
+			methodInfos.add(MethodInfo.getMethodInfo(ctxt));
 		}
 
 		return new Methods(methodInfos);

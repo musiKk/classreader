@@ -27,6 +27,7 @@
 package com.github.musikk.classreader.attributes;
 
 import com.github.musikk.classreader.ClassReader;
+import com.github.musikk.classreader.ClassReaderContext;
 import com.github.musikk.classreader.constantpool.ConstantPool;
 
 public class AttributeInfo {
@@ -59,28 +60,29 @@ public class AttributeInfo {
 		return info;
 	}
 
-	protected static AttributeInfo getAttributeInfo(ClassReader classReader) {
+	protected static AttributeInfo getAttributeInfo(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
 
-		int attributeNameIndex = classReader.readShort();
-		int attributeLength = classReader.readInt();
-		byte[] info = new byte[attributeLength];
-		classReader.readBytesFully(info);
+		int attributeNameIndex = reader.readUnsignedShort();
+		int attributeLength = reader.readInt();
 
-		ConstantPool constantPool = classReader.getConstantPool();
-		String attributeName = constantPool.getUtf8Info(attributeNameIndex)
-				.getValue();
+		ConstantPool constantPool = ctxt.getConstantPool();
+		String attributeName = constantPool.getUtf8Info(attributeNameIndex).getValue();
 		AttributeType attributeType = AttributeType.byName(attributeName);
 
 		AttributeInfo attributeInfo;
 		if (attributeType != null) {
-			attributeInfo = attributeType.create(attributeLength, info, constantPool);
+			attributeInfo = attributeType.create(ctxt);
 			// TODO remove once all attribute types are implemented
 			if (attributeInfo == null) {
+				reader.readBytesFully(new byte[attributeLength]); // just skip it
 				attributeInfo = new AttributeInfo();
 			}
 		} else {
 			attributeInfo = new AttributeInfo();
-			attributeInfo.setInfo(info);
+			byte[] bytes = new byte[attributeLength];
+			reader.readBytesFully(bytes);
+			attributeInfo.setInfo(bytes);
 		}
 
 		attributeInfo.setAttributeNameIndex(attributeNameIndex);

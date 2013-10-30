@@ -26,27 +26,32 @@
  */
 package com.github.musikk.classreader.attributes;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import com.github.musikk.classreader.ClassReader;
+import com.github.musikk.classreader.ClassReaderContext;
 
 public class Annotation {
 
 	private final int typeIndex;
-	private final ElementValuePair[] elementValuePairs;
+	private final List<ElementValuePair> elementValuePairs;
 
-	public Annotation(int typeIndex, ElementValuePair[] elementValuePairs) {
+	public Annotation(int typeIndex, List<ElementValuePair> elementValuePairs) {
 		this.typeIndex = typeIndex;
 		this.elementValuePairs = elementValuePairs;
 	}
 
-	public static Annotation getAnnotation(ClassReader reader) {
-		int typeIndex = reader.readShort();
+	public static Annotation getAnnotation(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
+
+		int typeIndex = reader.readUnsignedShort();
 		int numElementValuePairs = reader.readUnsignedShort();
 
-		ElementValuePair[] elementValuePairs = new ElementValuePair[numElementValuePairs];
+		List<ElementValuePair> elementValuePairs = new ArrayList<>(numElementValuePairs);
 		for (int i = 0; i < numElementValuePairs; i++) {
-			elementValuePairs[i] = ElementValuePair.getElementValuePair(reader);
+			elementValuePairs.add(ElementValuePair.getElementValuePair(ctxt));
 		}
 
 		return new Annotation(typeIndex, elementValuePairs);
@@ -56,14 +61,14 @@ public class Annotation {
 		return typeIndex;
 	}
 
-	public ElementValuePair[] getElementValuePairs() {
-		return elementValuePairs;
+	public List<ElementValuePair> getElementValuePairs() {
+		return Collections.unmodifiableList(elementValuePairs);
 	}
 
 	@Override
 	public String toString() {
 		return "Annotation [typeIndex=" + typeIndex + ", elementValuePairs="
-				+ Arrays.toString(elementValuePairs) + "]";
+				+ elementValuePairs + "]";
 	}
 
 	public static class ElementValuePair {
@@ -76,8 +81,9 @@ public class Annotation {
 			this.elementValue = elementValue;
 		}
 
-		private static ElementValuePair getElementValuePair(ClassReader reader) {
-			return new ElementValuePair(reader.readShort(), ElementValue.getElementValue(reader));
+		private static ElementValuePair getElementValuePair(ClassReaderContext ctxt) {
+			int elementNameIndex = ctxt.getClassReader().readUnsignedShort();
+			return new ElementValuePair(elementNameIndex, ElementValue.getElementValue(ctxt));
 		}
 
 		public int getElementNameIndex() {

@@ -27,6 +27,7 @@
 package com.github.musikk.classreader.attributes;
 
 import com.github.musikk.classreader.ClassReader;
+import com.github.musikk.classreader.ClassReaderContext;
 
 public class LineNumberTableEntry {
 
@@ -46,11 +47,11 @@ public class LineNumberTableEntry {
 		return lineNumber;
 	}
 
-	protected static LineNumberTableEntry getLineNumberTableEntry(
-			ClassReader classReader) {
+	protected static LineNumberTableEntry getLineNumberTableEntry(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
 
-		int startPc = classReader.readShort();
-		int lineNumber = classReader.readShort();
+		int startPc = reader.readUnsignedShort();
+		int lineNumber = reader.readUnsignedShort();
 
 		return new LineNumberTableEntry(startPc, lineNumber);
 

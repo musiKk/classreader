@@ -26,9 +26,12 @@
  */
 package com.github.musikk.classreader.attributes;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import com.github.musikk.classreader.ClassReader;
+import com.github.musikk.classreader.ClassReaderContext;
 
 public abstract class ElementValue {
 
@@ -38,7 +41,9 @@ public abstract class ElementValue {
 		this.tag = tag;
 	}
 
-	public static ElementValue getElementValue(ClassReader reader) {
+	public static ElementValue getElementValue(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
+
 		char tag = (char) reader.readByte();
 		// TODO create some field descriptor helper or something
 		switch (tag) {
@@ -51,15 +56,15 @@ public abstract class ElementValue {
 		case 'S':
 		case 'Z':
 		case 's':
-			return Constant.getConstant(tag, reader);
+			return Constant.getConstant(tag, ctxt);
 		case 'e':
-			return EnumConstant.getEnumConstant(tag, reader);
+			return EnumConstant.getEnumConstant(tag, ctxt);
 		case 'c':
-			return ClassInfo.getClassInfo(tag, reader);
+			return ClassInfo.getClassInfo(tag, ctxt);
 		case '@':
-			return AnnotationValue.getAnnotationValue(tag, reader);
+			return Annotation.getAnnotationValue(tag, ctxt);
 		case '[':
-			return Array.getArray(tag, reader);
+			return Array.getArray(tag, ctxt);
 		default:
 			throw new IllegalStateException("unknown tag '" + tag + "' for element value");
 		}
@@ -78,8 +83,8 @@ public abstract class ElementValue {
 			this.constValueIndex = constValueIndex;
 		}
 
-		private static Constant getConstant(char tag, ClassReader reader) {
-			return new Constant(tag, reader.readShort());
+		private static Constant getConstant(char tag, ClassReaderContext ctxt) {
+			return new Constant(tag, ctxt.getClassReader().readShort());
 		}
 
 		public int getConstValueIndex() {
@@ -105,7 +110,8 @@ public abstract class ElementValue {
 			this.constNameIndex = constNameIndex;
 		}
 
-		private static EnumConstant getEnumConstant(char tag, ClassReader reader) {
+		private static EnumConstant getEnumConstant(char tag, ClassReaderContext ctxt) {
+			ClassReader reader = ctxt.getClassReader();
 			return new EnumConstant(tag, reader.readShort(), reader.readShort());
 		}
 
@@ -135,8 +141,8 @@ public abstract class ElementValue {
 			this.classInfoIndex = classInfoIndex;
 		}
 
-		private static ClassInfo getClassInfo(char tag, ClassReader reader) {
-			return new ClassInfo(tag, reader.readShort());
+		private static ClassInfo getClassInfo(char tag, ClassReaderContext ctxt) {
+			return new ClassInfo(tag, ctxt.getClassReader().readShort());
 		}
 
 		public int getClassInfoIndex() {
@@ -151,26 +157,26 @@ public abstract class ElementValue {
 
 	}
 
-	public static class AnnotationValue extends ElementValue {
+	public static class Annotation extends ElementValue {
 
-		private final Annotation annotation;
+		private final com.github.musikk.classreader.attributes.Annotation annotation;
 
-		private AnnotationValue(char tag, Annotation annotation) {
+		private Annotation(char tag, com.github.musikk.classreader.attributes.Annotation annotation) {
 			super(tag);
 			this.annotation = annotation;
 		}
 
-		private static AnnotationValue getAnnotationValue(char tag, ClassReader reader) {
-			return new AnnotationValue(tag, Annotation.getAnnotation(reader));
+		private static Annotation getAnnotationValue(char tag, ClassReaderContext ctxt) {
+			return new ElementValue.Annotation(tag, com.github.musikk.classreader.attributes.Annotation.getAnnotation(ctxt));
 		}
 
-		public Annotation getAnnotation() {
+		public com.github.musikk.classreader.attributes.Annotation getAnnotation() {
 			return annotation;
 		}
 
 		@Override
 		public String toString() {
-			return "AnnotationValue [annotation=" + annotation + ", getTag()="
+			return "Annotation [annotation=" + annotation + ", getTag()="
 					+ getTag() + "]";
 		}
 
@@ -178,30 +184,31 @@ public abstract class ElementValue {
 
 	public static class Array extends ElementValue {
 
-		private final ElementValue[] values;
+		private final List<ElementValue> values;
 
-		public Array(char tag, ElementValue[] values) {
+		public Array(char tag, List<ElementValue> values) {
 			super(tag);
 			this.values = values;
 		}
 
-		private static Array getArray(char tag, ClassReader reader) {
+		private static Array getArray(char tag, ClassReaderContext ctxt) {
+			ClassReader reader = ctxt.getClassReader();
+
 			int numValues = reader.readUnsignedShort();
-			ElementValue[] values = new ElementValue[numValues];
+			List<ElementValue> values = new ArrayList<>(numValues);
 			for (int i = 0; i < numValues; i++) {
-				values[i] = ElementValue.getElementValue(reader);
+				values.add(ElementValue.getElementValue(ctxt));
 			}
 			return new Array(tag, values);
 		}
 
-		public ElementValue[] getValues() {
-			return values;
+		public List<ElementValue> getValues() {
+			return Collections.unmodifiableList(values);
 		}
 
 		@Override
 		public String toString() {
-			return "Array [values=" + Arrays.toString(values) + ", getTag()="
-					+ getTag() + "]";
+			return "Array [values=" + values + ", getTag()=" + getTag() + "]";
 		}
 
 	}

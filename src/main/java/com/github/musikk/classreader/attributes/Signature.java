@@ -26,9 +26,7 @@
  */
 package com.github.musikk.classreader.attributes;
 
-import com.github.musikk.classreader.ClassReader;
-import com.github.musikk.classreader.constantpool.ConstantPool;
-import com.github.musikk.classreader.util.StreamUtils;
+import com.github.musikk.classreader.ClassReaderContext;
 
 public class Signature extends AttributeInfo {
 
@@ -38,9 +36,9 @@ public class Signature extends AttributeInfo {
 		this.signatureIndex = signatureIndex;
 	}
 
-	public static AttributeInfo getSignature(int attributeLength, byte[] info, ConstantPool constantPool) {
-		ClassReader reader = StreamUtils.createClassReader(info, constantPool);
-		return new Signature(reader.readShort());
+	public static AttributeInfo getSignature(ClassReaderContext ctxt) {
+		int signatureIndex = ctxt.getClassReader().readUnsignedShort();
+		return new Signature(signatureIndex);
 	}
 
 	public int getSignatureIndex() {

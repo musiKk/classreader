@@ -26,7 +26,7 @@
  */
 package com.github.musikk.classreader.attributes;
 
-import com.github.musikk.classreader.constantpool.ConstantPool;
+import com.github.musikk.classreader.ClassReaderContext;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
@@ -74,28 +74,28 @@ public enum AttributeType {
 		return NAME_MAPPING.inverse().get(name);
 	}
 
-	public AttributeInfo create(int attributeLength, byte[] info, ConstantPool constantPool) {
+	public AttributeInfo create(ClassReaderContext ctxt) {
 		switch (this) {
 		case ANNOTATION_DEFAULT:
-			return AnnotationDefault.getAnnotationDefault(attributeLength, info, constantPool);
+			return AnnotationDefault.getAnnotationDefault(ctxt);
 		case BOOTSTRAP_METHODS:
 			return null;
 		case CODE:
-			return CodeAttribute.getCode(attributeLength, info, constantPool);
+			return CodeAttribute.getCode(ctxt);
 		case CONSTANT_VALUE:
-			return ConstantValueAttribute.getConstantValue(attributeLength, info, constantPool);
+			return ConstantValueAttribute.getConstantValue(ctxt);
 		case DEPRECATED:
 			return Deprecated.getDeprecated();
 		case ENCLOSING_METHOD:
-			return EnclosingMethod.getEnclosingMethod(info, constantPool);
+			return EnclosingMethod.getEnclosingMethod(ctxt);
 		case EXCEPTIONS:
-			return ExceptionAttribute.getExceptionAttribute(attributeLength, info, constantPool);
+			return ExceptionAttribute.getExceptionAttribute(ctxt);
 		case INNER_CLASSES:
-			return InnerClassesAttribute.getInnerClassesAttribute(attributeLength, info, constantPool);
+			return InnerClassesAttribute.getInnerClassesAttribute(ctxt);
 		case LINE_NUMBER_TABLE:
-			return LineNumberTableAttribute.getLineNumberTableAttribute(attributeLength, info, constantPool);
+			return LineNumberTableAttribute.getLineNumberTableAttribute(ctxt);
 		case LOCAL_VARIABLE_TABLE:
-			return LocalVariableTableAttribute.getLocalVariableTableAttribute(attributeLength, info, constantPool);
+			return LocalVariableTableAttribute.getLocalVariableTableAttribute(ctxt);
 		case LOCAL_VARIABLE_TYPE_TABLE:
 		case RUNTIME_INVISIBLE_ANNOTATIONS:
 		case RUNTIME_INVISIBLE_PARAMETER_ANNOTATIONS:
@@ -103,11 +103,11 @@ public enum AttributeType {
 		case RUNTIME_VISIBLE_PARAMETER_ANNOTATIONS:
 			return null;
 		case SIGNATURE:
-			return Signature.getSignature(attributeLength, info, constantPool);
+			return Signature.getSignature(ctxt);
 		case SOURCE_DEBUG_EXTENSION:
 			return null;
 		case SOURCE_FILE:
-			return SourceFileAttribute.getSourceFileAttribute(attributeLength, info, constantPool);
+			return SourceFileAttribute.getSourceFileAttribute(ctxt);
 		case STACK_MAP_TABLE:
 			return null;
 		case SYNTHETIC:

@@ -26,27 +26,32 @@
  */
 package com.github.musikk.classreader.attributes;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.github.musikk.classreader.ClassReader;
+import com.github.musikk.classreader.ClassReaderContext;
 
 public class ExceptionTable {
 
-	private final ExceptionTableEntry[] exceptionTableEntries;
+	private final List<ExceptionTableEntry> exceptionTableEntries;
 
-	private ExceptionTable(ExceptionTableEntry[] exceptionTableEntries) {
+	private ExceptionTable(List<ExceptionTableEntry> exceptionTableEntries) {
 		this.exceptionTableEntries = exceptionTableEntries;
 	}
 
-	public ExceptionTableEntry[] getExceptionTableEntries() {
-		return exceptionTableEntries;
+	public List<ExceptionTableEntry> getExceptionTableEntries() {
+		return Collections.unmodifiableList(exceptionTableEntries);
 	}
 
-	protected static ExceptionTable getExceptionTable(ClassReader classReader,
-			int exceptionTableLength) {
+	protected static ExceptionTable getExceptionTable(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
 
-		ExceptionTableEntry[] exceptionTableEntries = new ExceptionTableEntry[exceptionTableLength];
+		int exceptionTableLength = reader.readUnsignedShort();
+		List<ExceptionTableEntry> exceptionTableEntries = new ArrayList<>(exceptionTableLength);
 		for (int i = 0; i < exceptionTableLength; i++) {
-			exceptionTableEntries[i] = ExceptionTableEntry
-					.getExceptionTableEntry(classReader);
+			exceptionTableEntries.add(ExceptionTableEntry.getExceptionTableEntry(ctxt));
 		}
 		return new ExceptionTable(exceptionTableEntries);
 

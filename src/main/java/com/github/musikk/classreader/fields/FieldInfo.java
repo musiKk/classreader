@@ -29,6 +29,7 @@ package com.github.musikk.classreader.fields;
 import java.util.EnumSet;
 
 import com.github.musikk.classreader.ClassReader;
+import com.github.musikk.classreader.ClassReaderContext;
 import com.github.musikk.classreader.Modifier;
 import com.github.musikk.classreader.attributes.Attributes;
 
@@ -93,15 +94,14 @@ public class FieldInfo {
 		return attributes;
 	}
 
-	protected static FieldInfo getFieldInfo(ClassReader classStream) {
+	protected static FieldInfo getFieldInfo(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
 
-		int flags = classStream.readShort();
-		int nameIndex = classStream.readShort();
-		int descriptorIndex = classStream.readShort();
+		int flags = reader.readShort();
+		int nameIndex = reader.readUnsignedShort();
+		int descriptorIndex = reader.readUnsignedShort();
 
-		int attributesCount = classStream.readShort();
-		Attributes attributes = Attributes.getAttributes(classStream,
-				attributesCount);
+		Attributes attributes = Attributes.getAttributes(ctxt);
 
 		return new FieldInfo(flags, nameIndex, descriptorIndex, attributes);
 

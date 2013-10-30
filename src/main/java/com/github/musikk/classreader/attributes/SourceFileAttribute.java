@@ -26,9 +26,7 @@
  */
 package com.github.musikk.classreader.attributes;
 
-import com.github.musikk.classreader.ClassReader;
-import com.github.musikk.classreader.constantpool.ConstantPool;
-import com.github.musikk.classreader.util.StreamUtils;
+import com.github.musikk.classreader.ClassReaderContext;
 
 public class SourceFileAttribute extends AttributeInfo {
 
@@ -42,12 +40,8 @@ public class SourceFileAttribute extends AttributeInfo {
 		return sourceFileIndex;
 	}
 
-	protected static SourceFileAttribute getSourceFileAttribute(
-			int attributeLength, byte[] info, ConstantPool constantPool) {
-
-		ClassReader classReader = StreamUtils.createClassReader(info);
-
-		int sourceFileIndex = classReader.readShort();
+	protected static SourceFileAttribute getSourceFileAttribute(ClassReaderContext ctxt) {
+		int sourceFileIndex = ctxt.getClassReader().readUnsignedShort();
 
 		return new SourceFileAttribute(sourceFileIndex);
 

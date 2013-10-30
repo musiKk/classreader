@@ -27,8 +27,7 @@
 package com.github.musikk.classreader.attributes;
 
 import com.github.musikk.classreader.ClassReader;
-import com.github.musikk.classreader.constantpool.ConstantPool;
-import com.github.musikk.classreader.util.StreamUtils;
+import com.github.musikk.classreader.ClassReaderContext;
 
 public class EnclosingMethod extends AttributeInfo {
 
@@ -40,9 +39,13 @@ public class EnclosingMethod extends AttributeInfo {
 		this.methodIndex = methodIndex;
 	}
 
-	public static AttributeInfo getEnclosingMethod(byte[] info, ConstantPool constantPool) {
-		ClassReader reader = StreamUtils.createClassReader(info, constantPool);
-		return new EnclosingMethod(reader.readShort(), reader.readShort());
+	public static AttributeInfo getEnclosingMethod(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
+
+		int classIndex = reader.readUnsignedShort();
+		int methodIndex = reader.readUnsignedShort();
+
+		return new EnclosingMethod(classIndex, methodIndex);
 	}
 
 	public int getClassIndex() {

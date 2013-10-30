@@ -142,24 +142,19 @@ public class ClassFile {
 	}
 
 	private void readAttributes() {
-		int attributesCount = classReader.readUnsignedShort();
-		this.attributes = Attributes
-				.getAttributes(classReader, attributesCount);
+		this.attributes = Attributes.getAttributes(classReaderContext);
 	}
 
 	private void readMethods() {
-		int methodsCount = classReader.readUnsignedShort();
-		this.methods = Methods.getMethods(classReader, methodsCount);
+		this.methods = Methods.getMethods(classReaderContext);
 	}
 
 	private void readFields() {
-		int fieldsCount = classReader.readUnsignedShort();
-		this.fields = Fields.getFields(classReader, fieldsCount);
+		this.fields = Fields.getFields(classReaderContext);
 	}
 
 	private void readInterfaces() {
-		int interfacesCount = classReader.readUnsignedShort();
-		this.interfaces = Interfaces.getInterfaces(classReader, interfacesCount);
+		this.interfaces = Interfaces.getInterfaces(classReaderContext);
 	}
 
 	private void readSuperClassIndex() {

@@ -1,7 +1,6 @@
 package com.github.musikk.classreader.attributes;
 
-import com.github.musikk.classreader.constantpool.ConstantPool;
-import com.github.musikk.classreader.util.StreamUtils;
+import com.github.musikk.classreader.ClassReaderContext;
 
 public class AnnotationDefault extends AttributeInfo {
 
@@ -11,8 +10,8 @@ public class AnnotationDefault extends AttributeInfo {
 		this.defaultValue = defaultValue;
 	}
 
-	public static AttributeInfo getAnnotationDefault(int attributeLength, byte[] info, ConstantPool constantPool) {
-		return new AnnotationDefault(ElementValue.getElementValue(StreamUtils.createClassReader(info, constantPool)));
+	public static AttributeInfo getAnnotationDefault(ClassReaderContext ctxt) {
+		return new AnnotationDefault(ElementValue.getElementValue(ctxt));
 	}
 
 	public ElementValue getDefaultValue() {

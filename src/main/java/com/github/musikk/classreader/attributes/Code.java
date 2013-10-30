@@ -30,11 +30,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import com.github.musikk.classreader.ClassReader;
-import com.github.musikk.classreader.constantpool.ConstantPool;
+import com.github.musikk.classreader.ClassReaderContext;
 import com.github.musikk.classreader.instructions.Instruction;
-import com.github.musikk.classreader.util.StreamUtils;
-
-
 
 public class Code {
 
@@ -48,17 +45,17 @@ public class Code {
 		return instructions;
 	}
 
-	protected static Code getCode(byte[] code, ConstantPool constantPool) {
-
-		ClassReader classReader = StreamUtils.createClassReader(code,
-				constantPool);
+	protected static Code getCode(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
 
 		SortedMap<Integer, Instruction> instructions = new TreeMap<Integer, Instruction>();
 
 		int currentByte = 0;
+		int codeLength = reader.readInt();
 
-		Instruction instruction = null;
-		while ((instruction = Instruction.getNextInstruction(classReader)) != null) {
+		while (currentByte < codeLength) {
+			Instruction instruction = Instruction.getNextInstruction(reader);
+
 			int instructionSize = instruction.getInstructionSize();
 			instructions.put(currentByte, instruction);
 			currentByte += instructionSize;

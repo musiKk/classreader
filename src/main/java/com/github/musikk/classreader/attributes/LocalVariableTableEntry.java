@@ -27,20 +27,26 @@
 package com.github.musikk.classreader.attributes;
 
 import com.github.musikk.classreader.ClassReader;
+import com.github.musikk.classreader.ClassReaderContext;
 
 public class LocalVariableTableEntry {
 
+	private final int startPc;
 	private final int length;
 	private final int nameIndex;
 	private final int descriptorIndex;
 	private final int index;
 
-	private LocalVariableTableEntry(int length, int nameIndex,
-			int descriptorIndex, int index) {
+	private LocalVariableTableEntry(int startPc, int length, int nameIndex, int descriptorIndex, int index) {
+		this.startPc = startPc;
 		this.length = length;
 		this.nameIndex = nameIndex;
 		this.descriptorIndex = descriptorIndex;
 		this.index = index;
+	}
+
+	public int getStartPc() {
+		return startPc;
 	}
 
 	public int getLength() {
@@ -59,16 +65,16 @@ public class LocalVariableTableEntry {
 		return index;
 	}
 
-	protected static LocalVariableTableEntry getLocalVariableTableEntry(
-			ClassReader classReader) {
+	protected static LocalVariableTableEntry getLocalVariableTableEntry(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
 
-		int length = classReader.readShort();
-		int nameIndex = classReader.readShort();
-		int descriptorIndex = classReader.readShort();
-		int index = classReader.readShort();
+		int startPc = reader.readUnsignedShort();
+		int length = reader.readUnsignedShort();
+		int nameIndex = reader.readUnsignedShort();
+		int descriptorIndex = reader.readUnsignedShort();
+		int index = reader.readUnsignedShort();
 
-		return new LocalVariableTableEntry(length, nameIndex, descriptorIndex,
-				index);
+		return new LocalVariableTableEntry(startPc, length, nameIndex, descriptorIndex, index);
 
 	}
 

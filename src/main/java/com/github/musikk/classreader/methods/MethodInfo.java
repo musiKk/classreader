@@ -29,6 +29,7 @@ package com.github.musikk.classreader.methods;
 import java.util.EnumSet;
 
 import com.github.musikk.classreader.ClassReader;
+import com.github.musikk.classreader.ClassReaderContext;
 import com.github.musikk.classreader.Modifier;
 import com.github.musikk.classreader.attributes.Attributes;
 
@@ -101,15 +102,14 @@ public class MethodInfo {
 		return attributes;
 	}
 
-	protected static MethodInfo getMethodInfo(ClassReader classStream) {
+	protected static MethodInfo getMethodInfo(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
 
-		int flags = classStream.readShort();
-		int nameIndex = classStream.readShort();
-		int descriptorIndex = classStream.readShort();
+		int flags = reader.readUnsignedShort();
+		int nameIndex = reader.readUnsignedShort();
+		int descriptorIndex = reader.readUnsignedShort();
 
-		int attributesCount = classStream.readShort();
-		Attributes attributes = Attributes.getAttributes(classStream,
-				attributesCount);
+		Attributes attributes = Attributes.getAttributes(ctxt);
 
 		return new MethodInfo(flags, nameIndex, descriptorIndex, attributes);
 	}

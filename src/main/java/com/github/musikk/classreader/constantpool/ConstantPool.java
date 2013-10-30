@@ -64,7 +64,7 @@ public class ConstantPool implements Iterable<ConstantPoolInfo> {
 	public static ConstantPool createConstantPool(ClassReaderContext ctxt) {
 		ClassReader reader = ctxt.getClassReader();
 		int constantPoolCount = reader.readUnsignedShort();
-		List<ConstantPoolInfo> constantPoolInfos = new ArrayList<ConstantPoolInfo>(constantPoolCount);
+		List<ConstantPoolInfo> constantPoolInfos = new ArrayList<>(constantPoolCount);
 
 		for (int i = 0; i < constantPoolCount - 1; i++) {
 			byte tag = reader.readByte();

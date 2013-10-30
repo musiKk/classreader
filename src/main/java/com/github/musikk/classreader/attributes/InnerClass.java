@@ -29,6 +29,7 @@ package com.github.musikk.classreader.attributes;
 import java.util.EnumSet;
 
 import com.github.musikk.classreader.ClassReader;
+import com.github.musikk.classreader.ClassReaderContext;
 import com.github.musikk.classreader.Modifier;
 
 public class InnerClass {
@@ -81,15 +82,15 @@ public class InnerClass {
 		return modifiers.contains(Modifier.ABSTRACT);
 	}
 
-	protected static InnerClass getInnerClass(ClassReader classReader) {
+	protected static InnerClass getInnerClass(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
 
-		int innerClassInfoIndex = classReader.readShort();
-		int outerClassInfoIndex = classReader.readShort();
-		int innerNameIndex = classReader.readShort();
-		int innerClassAccessFlags = classReader.readShort();
+		int innerClassInfoIndex = reader.readShort();
+		int outerClassInfoIndex = reader.readShort();
+		int innerNameIndex = reader.readShort();
+		int innerClassAccessFlags = reader.readShort();
 
-		return new InnerClass(innerClassInfoIndex, outerClassInfoIndex,
-				innerNameIndex, innerClassAccessFlags);
+		return new InnerClass(innerClassInfoIndex, outerClassInfoIndex, innerNameIndex, innerClassAccessFlags);
 
 	}
 
