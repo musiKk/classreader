@@ -77,7 +77,7 @@ public enum ConstantPoolInfoType {
 		case INTEGER:
 			return IntegerInfo.createIntegerInfo(ctxt);
 		case INTERFACE_METHODREF:
-			return ConstantMethodrefInfo.createConstantMethodrefInfo(ctxt);
+			return InterfaceMethodrefInfo.createInterfaceMethodrefInfo(ctxt);
 		case INVOKE_DYNAMIC:
 			return InvokeDynamicInfo.createInvokeDynamicInfo(ctxt);
 		case LONG:
