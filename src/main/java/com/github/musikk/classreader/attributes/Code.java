@@ -48,13 +48,13 @@ public class Code {
 	protected static Code getCode(ClassReaderContext ctxt) {
 		ClassReader reader = ctxt.getClassReader();
 
-		SortedMap<Integer, Instruction> instructions = new TreeMap<Integer, Instruction>();
+		SortedMap<Integer, Instruction> instructions = new TreeMap<>();
 
 		int currentByte = 0;
 		int codeLength = reader.readInt();
 
 		while (currentByte < codeLength) {
-			Instruction instruction = Instruction.getNextInstruction(reader);
+			Instruction instruction = Instruction.getNextInstruction(reader, currentByte);
 
 			int instructionSize = instruction.getInstructionSize();
 			instructions.put(currentByte, instruction);

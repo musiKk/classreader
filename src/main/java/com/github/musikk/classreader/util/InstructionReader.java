@@ -94,11 +94,11 @@ public class InstructionReader {
 		return new InstructionFactory() {
 
 			@Override
-			public Instruction getInstruction(ClassReader classReader) {
+			public Instruction getInstruction(ClassReader classReader, int methodOffset) {
 
 				int size = 1;
 
-				int padding = ensureZeroPadding(classReader, 4);
+				int padding = ensureZeroPadding(classReader, methodOffset, 4);
 				size += padding;
 
 				List<Operand> operands = new ArrayList<>();
@@ -129,11 +129,11 @@ public class InstructionReader {
 		return new InstructionFactory() {
 
 			@Override
-			public Instruction getInstruction(ClassReader classReader) {
+			public Instruction getInstruction(ClassReader classReader, int methodOffset) {
 
 				int size = 1;
 
-				int padding = ensureZeroPadding(classReader, 4);
+				int padding = ensureZeroPadding(classReader, methodOffset, 4);
 				size += padding;
 
 				List<Operand> operands = new ArrayList<>();
@@ -164,7 +164,7 @@ public class InstructionReader {
 		return new InstructionFactory() {
 
 			@Override
-			public Instruction getInstruction(ClassReader classReader) {
+			public Instruction getInstruction(ClassReader classReader, int methodOffset) {
 
 				int size = 1;
 
@@ -212,8 +212,8 @@ public class InstructionReader {
 
 	}
 
-	private static int ensureZeroPadding(ClassReader classReader, int alignment) {
-		int position = classReader.getPosition();
+	private static int ensureZeroPadding(ClassReader classReader, int methodOffset, int alignment) {
+		int position = methodOffset;
 		int padding = 0;
 		while ((position + 1) % alignment != 0) {
 			position++;
@@ -234,7 +234,7 @@ public class InstructionReader {
 
 		return new InstructionFactory() {
 			@Override
-			public Instruction getInstruction(ClassReader classReader) {
+			public Instruction getInstruction(ClassReader classReader, int methodOffset) {
 				return new Instruction(opcode, mnemonic, instructionSize,
 						getOperands(types, names, classReader));
 			}

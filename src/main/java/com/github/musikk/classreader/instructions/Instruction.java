@@ -32,8 +32,6 @@ import java.util.Map;
 import com.github.musikk.classreader.ClassReader;
 import com.github.musikk.classreader.util.InstructionReader;
 
-
-
 public class Instruction {
 
 	private static final Map<Integer, InstructionFactory> instructionFactories;
@@ -66,14 +64,14 @@ public class Instruction {
 	/**
 	 * Queries the size of the instruction in bytes. The size is the size of the
 	 * instruction itself plus all operands.
-	 * 
+	 *
 	 * @return the size of the instruction in bytes
 	 */
 	public int getInstructionSize() {
 		return instructionSize;
 	}
 
-	public static Instruction getNextInstruction(ClassReader classReader) {
+	public static Instruction getNextInstruction(ClassReader classReader, int methodOffset) {
 
 		int opcode = -1;
 		try {
@@ -81,16 +79,13 @@ public class Instruction {
 		} catch (RuntimeException e) {
 			return null;
 		}
-		InstructionFactory instructionFactory = instructionFactories
-				.get(Integer.valueOf(opcode));
+		InstructionFactory instructionFactory = instructionFactories.get(Integer.valueOf(opcode));
 
 		if (instructionFactory == null) {
-			throw new RuntimeException(String.format("illegal opcode: 0x%x",
-					opcode));
+			throw new RuntimeException(String.format("illegal opcode: 0x%x", opcode));
 		}
 
-		Instruction instruction = instructionFactory
-				.getInstruction(classReader);
+		Instruction instruction = instructionFactory.getInstruction(classReader, methodOffset);
 
 		return instruction;
 

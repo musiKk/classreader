@@ -32,9 +32,9 @@ import com.github.musikk.classreader.ClassReader;
  * An instruction factory creates instructions. Every type of instruction has
  * its own instruction factory and every instruction factory produces only one
  * type of instructions.
- * 
+ *
  * @author whahn
- * 
+ *
  */
 public interface InstructionFactory {
 
@@ -42,11 +42,13 @@ public interface InstructionFactory {
 	 * This is the factory method that creates an instruction. An
 	 * <code>InstructionFactory</code> must not read more bytes from the
 	 * {@link ClassReader} than it needs.
-	 * 
+	 *
 	 * @param classReader
 	 *            the {@link ClassReader} instance for the current code.
+	 * @param methodOffset
+	 *            the offset from the start of the method
 	 * @return the built {@link Instruction}
 	 */
-	Instruction getInstruction(ClassReader classReader);
+	Instruction getInstruction(ClassReader classReader, int methodOffset);
 
 }
