@@ -213,26 +213,19 @@ public class InstructionReader {
 	}
 
 	private static int ensureZeroPadding(ClassReader classReader, int alignment) {
-
 		int position = classReader.getPosition();
 		int padding = 0;
+		while ((position + 1) % alignment != 0) {
+			position++;
+			padding++;
 
-		if (position % alignment == 0) {
-			padding = 0;
-		} else {
-			padding = alignment - (position % alignment);
-		}
-
-		for (int i = 0; i < padding; i++) {
 			byte b = classReader.readByte();
 			if (b != 0) {
-				throw new RuntimeException("padding byte must be zero but was "
-						+ b);
+				throw new RuntimeException("padding byte must be zero but was " + b);
 			}
 		}
 
 		return padding;
-
 	}
 
 	private static InstructionFactory createRegularInstructionFactory(
