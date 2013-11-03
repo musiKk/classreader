@@ -31,7 +31,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.SortedMap;
 
@@ -302,17 +301,7 @@ public class ClassFile {
 			System.out.printf("  volatile:   %b%n", fi.isVolatile());
 
 			System.out.println("  attributes:");
-			Attributes attributes = fi.getAttributes();
-			for (AttributeInfo ai : attributes.getAttributeInfos()) {
-				int attributeNameIndex = ai.getAttributeNameIndex();
-				System.out.printf("    name: %d (%s)%n", attributeNameIndex,
-						((Utf8Info) cp.getConstantPoolInfo(attributeNameIndex))
-								.getValue());
-				System.out.printf("    info: %s%n", Arrays.toString(ai
-						.getInfo()));
-				System.out.printf("    to string: %s%n", ai);
-				System.out.println();
-			}
+			dumpAttributes(cp, fi.getAttributes(), "    ");
 
 			System.out.println();
 		}
@@ -340,44 +329,33 @@ public class ClassFile {
 			System.out.printf("  synchronized: %b%n", mi.isSynchronized());
 
 			System.out.println("  attributes:");
-			Attributes attributes = mi.getAttributes();
-			for (AttributeInfo ai : attributes.getAttributeInfos()) {
-				int attributeNameIndex = ai.getAttributeNameIndex();
-				String name = ((Utf8Info) cp
-						.getConstantPoolInfo(attributeNameIndex)).getValue();
-				System.out.printf("    name: %d (%s)%n", attributeNameIndex,
-						name);
-				System.out.printf("    info: %s%n", Arrays.toString(ai
-						.getInfo()));
-				System.out.printf("    to string: %s%n", ai);
-
-				if ("Code".equals(name)) {
-					CodeAttribute codeAttribute = (CodeAttribute) ai;
-					Code code = codeAttribute.getCode();
-					SortedMap<Integer, Instruction> instructions = code
-							.getInstructions();
-					for (Integer byteOffset : instructions.keySet()) {
-						System.out.printf("    %4d: %s%n", byteOffset,
-								instructions.get(byteOffset).toString());
-					}
-				}
-
-				System.out.println();
-			}
+			dumpAttributes(cp, mi.getAttributes(), "    ");
 
 			System.out.println();
 		}
 
-		Attributes attributes = cf.getAttributes();
+		dumpAttributes(cp, cf.getAttributes(), "");
+
+	}
+
+	private static void dumpAttributes(ConstantPool constantPool, Attributes attributes, String prefix) {
 		for (AttributeInfo ai : attributes.getAttributeInfos()) {
 			int attributeNameIndex = ai.getAttributeNameIndex();
-			System.out.printf("name: %d (%s)%n", attributeNameIndex,
-					((Utf8Info) cp.getConstantPoolInfo(attributeNameIndex))
-							.getValue());
-			System.out.printf("info: %s%n", Arrays.toString(ai.getInfo()));
-			System.out.println();
-		}
+			String attributeName = constantPool.getUtf8Info(attributeNameIndex).getValue();
 
+			System.out.printf(prefix + "name: %d (%s)%n", attributeNameIndex, attributeName);
+			if ("Code".equals(attributeName)) {
+				CodeAttribute codeAttribute = (CodeAttribute) ai;
+				Code code = codeAttribute.getCode();
+				SortedMap<Integer, Instruction> instructions = code.getInstructions();
+				for (Integer byteOffset : instructions.keySet()) {
+					System.out.printf(prefix + "%4d: %s%n", byteOffset, instructions.get(byteOffset).toString());
+				}
+			} else {
+				System.out.println(prefix + ai);
+				System.out.println();
+			}
+		}
 	}
 
 }
