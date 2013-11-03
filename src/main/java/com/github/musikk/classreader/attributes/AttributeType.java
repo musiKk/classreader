@@ -113,7 +113,7 @@ public enum AttributeType {
 		case SOURCE_FILE:
 			return SourceFileAttribute.getSourceFileAttribute(ctxt);
 		case STACK_MAP_TABLE:
-			return null;
+			return StackMapTable.getStackMapTable(ctxt);
 		case SYNTHETIC:
 			return SyntheticAttribute.getSyntheticAttribute();
 		default:
