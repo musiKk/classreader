@@ -79,7 +79,7 @@ public enum AttributeType {
 		case ANNOTATION_DEFAULT:
 			return AnnotationDefault.getAnnotationDefault(ctxt);
 		case BOOTSTRAP_METHODS:
-			return null;
+			return BootstrapMethods.getBootstrapMethods(ctxt);
 		case CODE:
 			return CodeAttribute.getCode(ctxt);
 		case CONSTANT_VALUE:
