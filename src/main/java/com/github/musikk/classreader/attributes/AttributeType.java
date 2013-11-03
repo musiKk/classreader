@@ -99,10 +99,13 @@ public enum AttributeType {
 		case LOCAL_VARIABLE_TYPE_TABLE:
 			return LocalVariableTypeTableAttribute.getLocalVariableTableAttribute(ctxt);
 		case RUNTIME_INVISIBLE_ANNOTATIONS:
+			return RuntimeInvisibleAnnotations.getRuntineInvisibleAnnotations(ctxt);
 		case RUNTIME_INVISIBLE_PARAMETER_ANNOTATIONS:
+			return RuntimeInvisibleParameterAnnotations.getRuntimeInvisibleParameterAnnotations(ctxt);
 		case RUNTIME_VISIBLE_ANNOTATIONS:
+			return RunimeVisibleAnnotations.getRuntimeVisibleAnnotations(ctxt);
 		case RUNTIME_VISIBLE_PARAMETER_ANNOTATIONS:
-			return null;
+			return RuntimeVisibleParameterAnnotations.getRuntimeVisibleParameterAnnotations(ctxt);
 		case SIGNATURE:
 			return Signature.getSignature(ctxt);
 		case SOURCE_DEBUG_EXTENSION:
