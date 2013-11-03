@@ -97,6 +97,7 @@ public enum AttributeType {
 		case LOCAL_VARIABLE_TABLE:
 			return LocalVariableTableAttribute.getLocalVariableTableAttribute(ctxt);
 		case LOCAL_VARIABLE_TYPE_TABLE:
+			return LocalVariableTypeTableAttribute.getLocalVariableTableAttribute(ctxt);
 		case RUNTIME_INVISIBLE_ANNOTATIONS:
 		case RUNTIME_INVISIBLE_PARAMETER_ANNOTATIONS:
 		case RUNTIME_VISIBLE_ANNOTATIONS:
