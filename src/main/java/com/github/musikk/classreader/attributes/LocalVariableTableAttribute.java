@@ -35,13 +35,13 @@ import com.github.musikk.classreader.ClassReaderContext;
 
 public class LocalVariableTableAttribute extends AttributeInfo {
 
-	private final List<LocalVariableTableEntry> localVariableTableEntries;
+	private final List<Entry> localVariableTableEntries;
 
-	private LocalVariableTableAttribute(List<LocalVariableTableEntry> localVariableTableEntries) {
+	private LocalVariableTableAttribute(List<Entry> localVariableTableEntries) {
 		this.localVariableTableEntries = localVariableTableEntries;
 	}
 
-	public List<LocalVariableTableEntry> getLocalVariableTableEntries() {
+	public List<Entry> getLocalVariableTableEntries() {
 		return Collections.unmodifiableList(localVariableTableEntries);
 	}
 
@@ -49,13 +49,60 @@ public class LocalVariableTableAttribute extends AttributeInfo {
 		ClassReader reader = ctxt.getClassReader();
 
 		int localVariableTableLength = reader.readUnsignedShort();
-		List<LocalVariableTableEntry> localVariableTableEntries = new ArrayList<>(localVariableTableLength);
+		List<Entry> localVariableTableEntries = new ArrayList<>(localVariableTableLength);
 		for (int i = 0; i < localVariableTableLength; i++) {
-			localVariableTableEntries.add(LocalVariableTableEntry.getLocalVariableTableEntry(ctxt));
+			localVariableTableEntries.add(Entry.getLocalVariableTableEntry(ctxt));
 		}
 
 		return new LocalVariableTableAttribute(localVariableTableEntries);
-
 	}
 
+	public static class Entry {
+
+		private final int startPc;
+		private final int length;
+		private final int nameIndex;
+		private final int descriptorIndex;
+		private final int index;
+
+		private Entry(int startPc, int length, int nameIndex, int descriptorIndex, int index) {
+			this.startPc = startPc;
+			this.length = length;
+			this.nameIndex = nameIndex;
+			this.descriptorIndex = descriptorIndex;
+			this.index = index;
+		}
+
+		public int getStartPc() {
+			return startPc;
+		}
+
+		public int getLength() {
+			return length;
+		}
+
+		public int getNameIndex() {
+			return nameIndex;
+		}
+
+		public int getDescriptorIndex() {
+			return descriptorIndex;
+		}
+
+		public int getIndex() {
+			return index;
+		}
+
+		protected static Entry getLocalVariableTableEntry(ClassReaderContext ctxt) {
+			ClassReader reader = ctxt.getClassReader();
+
+			int startPc = reader.readUnsignedShort();
+			int length = reader.readUnsignedShort();
+			int nameIndex = reader.readUnsignedShort();
+			int descriptorIndex = reader.readUnsignedShort();
+			int index = reader.readUnsignedShort();
+
+			return new Entry(startPc, length, nameIndex, descriptorIndex, index);
+		}
+	}
 }
