@@ -351,6 +351,8 @@ public class ClassFile {
 				for (Integer byteOffset : instructions.keySet()) {
 					System.out.printf(prefix + "%4d: %s%n", byteOffset, instructions.get(byteOffset).toString());
 				}
+				System.out.println();
+				dumpAttributes(constantPool, codeAttribute.getAttributes(), prefix + "    ");
 			} else {
 				System.out.println(prefix + ai);
 				System.out.println();
