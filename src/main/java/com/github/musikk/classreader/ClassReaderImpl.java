@@ -134,7 +134,9 @@ public class ClassReaderImpl implements ClassReader {
 	@Override
 	public String readUtf8String() {
 		try {
-			return DataInputStream.readUTF(new DataInputStream(is));
+			String string = DataInputStream.readUTF(new DataInputStream(is));
+			position += string.getBytes().length;
+			return string;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
