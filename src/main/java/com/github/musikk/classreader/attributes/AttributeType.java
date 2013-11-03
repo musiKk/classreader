@@ -74,7 +74,7 @@ public enum AttributeType {
 		return NAME_MAPPING.inverse().get(name);
 	}
 
-	public AttributeInfo create(ClassReaderContext ctxt) {
+	public AttributeInfo create(ClassReaderContext ctxt, int length) {
 		switch (this) {
 		case ANNOTATION_DEFAULT:
 			return AnnotationDefault.getAnnotationDefault(ctxt);
@@ -109,7 +109,7 @@ public enum AttributeType {
 		case SIGNATURE:
 			return Signature.getSignature(ctxt);
 		case SOURCE_DEBUG_EXTENSION:
-			return null;
+			return SourceDebugExtension.getSourceDebugExtension(ctxt, length);
 		case SOURCE_FILE:
 			return SourceFileAttribute.getSourceFileAttribute(ctxt);
 		case STACK_MAP_TABLE:
