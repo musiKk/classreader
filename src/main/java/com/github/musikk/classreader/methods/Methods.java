@@ -28,12 +28,14 @@ package com.github.musikk.classreader.methods;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import com.github.musikk.classreader.ClassReader;
 import com.github.musikk.classreader.ClassReaderContext;
+import com.google.common.collect.Iterators;
 
-public class Methods {
+public class Methods implements Iterable<MethodInfo> {
 
 	private final List<MethodInfo> methodInfos;
 
@@ -55,6 +57,11 @@ public class Methods {
 		}
 
 		return new Methods(methodInfos);
+	}
+
+	@Override
+	public Iterator<MethodInfo> iterator() {
+		return Iterators.unmodifiableIterator(methodInfos.iterator());
 	}
 
 }

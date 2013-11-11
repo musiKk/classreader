@@ -28,12 +28,14 @@ package com.github.musikk.classreader.fields;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import com.github.musikk.classreader.ClassReader;
 import com.github.musikk.classreader.ClassReaderContext;
+import com.google.common.collect.Iterators;
 
-public class Fields {
+public class Fields implements Iterable<FieldInfo> {
 
 	private final List<FieldInfo> fieldInfos;
 
@@ -57,6 +59,11 @@ public class Fields {
 
 		return new Fields(fieldInfos);
 
+	}
+
+	@Override
+	public Iterator<FieldInfo> iterator() {
+		return Iterators.unmodifiableIterator(fieldInfos.iterator());
 	}
 
 }
