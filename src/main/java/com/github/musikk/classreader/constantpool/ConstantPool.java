@@ -26,9 +26,16 @@
  */
 package com.github.musikk.classreader.constantpool;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import com.github.musikk.classreader.ClassReader;
 import com.github.musikk.classreader.ClassReaderContext;
@@ -37,8 +44,15 @@ public class ConstantPool implements Iterable<ConstantPoolInfo> {
 
 	private final List<ConstantPoolInfo> constantPoolInfos;
 
-	private ConstantPool(List<ConstantPoolInfo> constantPoolInfos) {
+	/**
+	 * Maps types to the infos that are available for the type.
+	 */
+	private final Map<ConstantPoolInfoType, SortedMap<Integer, ConstantPoolInfo>> constantPoolInfosByType;
+
+	private ConstantPool(List<ConstantPoolInfo> constantPoolInfos,
+			Map<ConstantPoolInfoType, SortedMap<Integer, ConstantPoolInfo>> constantPoolInfosByType) {
 		this.constantPoolInfos = constantPoolInfos;
+		this.constantPoolInfosByType = constantPoolInfosByType;
 	}
 
 	public ConstantPoolInfo getConstantPoolInfo(int index) {
@@ -50,21 +64,142 @@ public class ConstantPool implements Iterable<ConstantPoolInfo> {
 		return cpi;
 	}
 
-	public Utf8Info getUtf8Info(int index) {
-		ConstantPoolInfo cpi = getConstantPoolInfo(index);
-		if (cpi instanceof Utf8Info) {
-			return (Utf8Info) cpi;
+	public boolean hasInfo(ConstantPoolInfoType type, int index) {
+		return constantPoolInfosByType.get(type).containsKey(index);
+	}
+
+	public ConstantPoolInfo getInfo(ConstantPoolInfoType type, int index) {
+		if (!hasInfo(type, index)) {
+			throw new IllegalArgumentException("There is no constant pool info of type "
+					+ type + " at index " + index + ".");
 		}
-		throw new RuntimeException(
-				"The ConstantPoolInfo at the specified index " + index
-						+ " is no Utf8Info but a " + cpi.getClass().getName()
-						+ ".");
+		return getConstantPoolInfo(index);
+	}
+
+	public List<ConstantPoolInfo> getInfos(ConstantPoolInfoType type) {
+		return Collections.unmodifiableList(new ArrayList<>(constantPoolInfosByType.get(type).values()));
+	}
+
+	public Utf8Info getUtf8Info(int index) {
+		return (Utf8Info) getInfo(ConstantPoolInfoType.UTF8, index);
+	}
+
+	public List<Utf8Info> getUtf8Infos() {
+		return new DowncastList<>(getInfos(ConstantPoolInfoType.UTF8));
+	}
+
+	public ConstantClassInfo getClassInfo(int index) {
+		return (ConstantClassInfo) getInfo(ConstantPoolInfoType.CLASS, index);
+	}
+
+	public List<ConstantClassInfo> getClassInfos() {
+		return new DowncastList<>(getInfos(ConstantPoolInfoType.CLASS));
+	}
+
+	public ConstantFieldrefInfo getFieldrefInfo(int index) {
+		return (ConstantFieldrefInfo) getInfo(ConstantPoolInfoType.FIELDREF, index);
+	}
+
+	public List<ConstantFieldrefInfo> getFieldrefInfos() {
+		return new DowncastList<>(getInfos(ConstantPoolInfoType.FIELDREF));
+	}
+
+	public ConstantMethodrefInfo getMethodrefInfo(int index) {
+		return (ConstantMethodrefInfo) getInfo(ConstantPoolInfoType.METHODREF, index);
+	}
+
+	public List<ConstantMethodrefInfo> getMethodrefInfos() {
+		return new DowncastList<>(getInfos(ConstantPoolInfoType.METHODREF));
+	}
+
+	public InterfaceMethodrefInfo getInterfaceMethodrefInfo(int index) {
+		return (InterfaceMethodrefInfo) getInfo(ConstantPoolInfoType.INTERFACE_METHODREF, index);
+	}
+
+	public List<InterfaceMethodrefInfo> getInterfaceMethodrefInfos() {
+		return new DowncastList<>(getInfos(ConstantPoolInfoType.INTERFACE_METHODREF));
+	}
+
+	public StringInfo getStringInfo(int index) {
+		return (StringInfo) getInfo(ConstantPoolInfoType.STRING, index);
+	}
+
+	public List<StringInfo> getStringInfos() {
+		return new DowncastList<>(getInfos(ConstantPoolInfoType.STRING));
+	}
+
+	public IntegerInfo getIntegerInfo(int index) {
+		return (IntegerInfo) getInfo(ConstantPoolInfoType.INTEGER, index);
+	}
+
+	public List<IntegerInfo> getIntegerInfos() {
+		return new DowncastList<>(getInfos(ConstantPoolInfoType.INTEGER));
+	}
+
+	public FloatInfo getFloatInfo(int index) {
+		return (FloatInfo) getInfo(ConstantPoolInfoType.FLOAT, index);
+	}
+
+	public List<FloatInfo> getFloatInfos() {
+		return new DowncastList<>(getInfos(ConstantPoolInfoType.FLOAT));
+	}
+
+	public LongInfo getLongInfo(int index) {
+		return (LongInfo) getInfo(ConstantPoolInfoType.LONG, index);
+	}
+
+	public List<LongInfo> getLongInfos() {
+		return new DowncastList<>(getInfos(ConstantPoolInfoType.LONG));
+	}
+
+	public DoubleInfo getDoubleInfo(int index) {
+		return (DoubleInfo) getInfo(ConstantPoolInfoType.DOUBLE, index);
+	}
+
+	public List<DoubleInfo> getDoubleInfos() {
+		return new DowncastList<>(getInfos(ConstantPoolInfoType.DOUBLE));
+	}
+
+	public NameAndTypeInfo getNameAndTypeInfo(int index) {
+		return (NameAndTypeInfo) getInfo(ConstantPoolInfoType.NAME_AND_TYPE, index);
+	}
+
+	public List<NameAndTypeInfo> getNameAndTypeInfos() {
+		return new DowncastList<>(getInfos(ConstantPoolInfoType.NAME_AND_TYPE));
+	}
+
+	public MethodHandleInfo getMethodHandleInfo(int index) {
+		return (MethodHandleInfo) getInfo(ConstantPoolInfoType.METHOD_HANDLE, index);
+	}
+
+	public List<MethodHandleInfo> getMethodHandleInfos() {
+		return new DowncastList<>(getInfos(ConstantPoolInfoType.METHOD_HANDLE));
+	}
+
+	public MethodTypeInfo getMethodTypeInfo(int index) {
+		return (MethodTypeInfo) getInfo(ConstantPoolInfoType.METHOD_TYPE, index);
+	}
+
+	public List<MethodTypeInfo> getMethodTypeInfos() {
+		return new DowncastList<>(getInfos(ConstantPoolInfoType.METHOD_TYPE));
+	}
+
+	public InvokeDynamicInfo getInvokeDynamicInfo(int index) {
+		return (InvokeDynamicInfo) getInfo(ConstantPoolInfoType.INVOKE_DYNAMIC, index);
+	}
+
+	public List<InvokeDynamicInfo> getInvokeDynamicInfos() {
+		return new DowncastList<>(getInfos(ConstantPoolInfoType.INVOKE_DYNAMIC));
 	}
 
 	public static ConstantPool createConstantPool(ClassReaderContext ctxt) {
 		ClassReader reader = ctxt.getClassReader();
 		int constantPoolCount = reader.readUnsignedShort();
 		List<ConstantPoolInfo> constantPoolInfos = new ArrayList<>(constantPoolCount);
+		Map<ConstantPoolInfoType, SortedMap<Integer, ConstantPoolInfo>> constantPoolInfosByType = new HashMap<>();
+		for (ConstantPoolInfoType t : ConstantPoolInfoType.values()) {
+			constantPoolInfosByType.put(t, new TreeMap<Integer, ConstantPoolInfo>());
+		}
 
 		for (int i = 0; i < constantPoolCount - 1; i++) {
 			byte tag = reader.readByte();
@@ -73,9 +208,10 @@ public class ConstantPool implements Iterable<ConstantPoolInfo> {
 			ConstantPoolInfo cpi = cpit.create(ctxt);
 			cpi.setTag(tag);
 			constantPoolInfos.add(i, cpi);
+			constantPoolInfosByType.get(cpit).put(i + 1, cpi);
 		}
 
-		ConstantPool constantPool = new ConstantPool(constantPoolInfos);
+		ConstantPool constantPool = new ConstantPool(constantPoolInfos, constantPoolInfosByType);
 		ctxt.setConstantPool(constantPool);
 		return constantPool;
 	}
@@ -116,6 +252,46 @@ public class ConstantPool implements Iterable<ConstantPoolInfo> {
 		@Override
 		public void remove() {
 			throw new UnsupportedOperationException();
+		}
+
+	}
+
+	/**
+	 * Simple list wrapper that allows simple downcasting.
+	 *
+	 * @author werner
+	 *
+	 * @param <T>
+	 */
+	private static class DowncastList<T extends ConstantPoolInfo> extends AbstractList<T> {
+
+		private final List<? super T> wrapped;
+
+		public DowncastList(List<? super T> wrapped) {
+			this.wrapped = wrapped;
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public T get(int index) {
+			return (T) wrapped.get(index);
+		}
+
+		@Override
+		public int size() {
+			return wrapped.size();
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public Iterator<T> iterator() {
+			return (Iterator<T>) wrapped.iterator();
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public ListIterator<T> listIterator() {
+			return (ListIterator<T>) wrapped.listIterator();
 		}
 
 	}
