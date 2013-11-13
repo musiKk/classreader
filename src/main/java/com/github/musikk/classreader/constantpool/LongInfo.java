@@ -28,7 +28,7 @@ package com.github.musikk.classreader.constantpool;
 
 import com.github.musikk.classreader.ClassReaderContext;
 
-public class LongInfo extends ConstantPoolInfo {
+public class LongInfo extends ConstantPoolInfo implements ValueInfo<Long> {
 
 	private final long value;
 
@@ -36,7 +36,8 @@ public class LongInfo extends ConstantPoolInfo {
 		this.value = value;
 	}
 
-	public long getValue() {
+	@Override
+	public Long getValue() {
 		return value;
 	}
 

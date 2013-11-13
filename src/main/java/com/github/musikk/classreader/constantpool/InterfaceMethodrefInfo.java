@@ -29,7 +29,7 @@ package com.github.musikk.classreader.constantpool;
 import com.github.musikk.classreader.ClassReader;
 import com.github.musikk.classreader.ClassReaderContext;
 
-public class InterfaceMethodrefInfo extends ConstantPoolInfo {
+public class InterfaceMethodrefInfo extends ConstantPoolInfo implements RefInfo {
 
 	private final int classIndex;
 	private final int nameAndTypeIndex;
@@ -39,10 +39,12 @@ public class InterfaceMethodrefInfo extends ConstantPoolInfo {
 		this.nameAndTypeIndex = nameAndTypeIndex;
 	}
 
+	@Override
 	public int getClassIndex() {
 		return classIndex;
 	}
 
+	@Override
 	public int getNameAndTypeIndex() {
 		return nameAndTypeIndex;
 	}

@@ -28,7 +28,7 @@ package com.github.musikk.classreader.constantpool;
 
 import com.github.musikk.classreader.ClassReaderContext;
 
-public class IntegerInfo extends ConstantPoolInfo {
+public class IntegerInfo extends ConstantPoolInfo implements ValueInfo<Integer> {
 
 	private final int value;
 
@@ -36,7 +36,8 @@ public class IntegerInfo extends ConstantPoolInfo {
 		this.value = value;
 	}
 
-	public int getValue() {
+	@Override
+	public Integer getValue() {
 		return value;
 	}
 
