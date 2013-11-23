@@ -26,29 +26,39 @@
  */
 package com.github.musikk.classreader;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.google.common.io.CountingInputStream;
+
 public class ClassReaderImpl implements ClassReader {
 
-	private final InputStream is;
-	private int position;
+	private final CountingInputStream countingInputStream;
+	private final DataInput dataInput;
 
 	public ClassReaderImpl(InputStream is) {
-		this.is = is;
-		this.position = 0;
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			byte[] buf = new byte[2048];
+			int read = -1;
+			while ((read = is.read(buf)) != -1) {
+				baos.write(buf, 0, read);
+			}
+			countingInputStream = new CountingInputStream(new ByteArrayInputStream(baos.toByteArray()));
+			dataInput = new DataInputStream(countingInputStream);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
 	public byte readByte() {
 		try {
-			int nextByte = is.read();
-			if (nextByte == -1) {
-				throw new RuntimeException("end of file");
-			}
-			position++;
-			return (byte) nextByte;
+			return dataInput.readByte();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -56,87 +66,89 @@ public class ClassReaderImpl implements ClassReader {
 
 	@Override
 	public void readBytesFully(byte[] buffer) {
-		readBytesFully(buffer, 0, buffer.length);
+		try {
+			dataInput.readFully(buffer, 0, buffer.length);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
 	public void readBytesFully(byte[] buffer, int offset, int length) {
-
-		int bytesLeft = length;
-
-		while (bytesLeft > 0) {
-			try {
-				int bytesRead = is.read(buffer, length - bytesLeft, bytesLeft);
-				bytesLeft -= bytesRead;
-			} catch (IOException e) {
-				e.printStackTrace();
-				throw new RuntimeException(e);
-			}
+		try {
+			dataInput.readFully(buffer, offset, length);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
-
-		position += length;
-
 	}
 
 	@Override
 	public int readInt() {
-		byte[] buffer = new byte[4];
-		readBytesFully(buffer);
-		int result = 0;
-		for (byte b : buffer) {
-			result <<= 8;
-			result |= b & 0xFF;
+		try {
+			return dataInput.readInt();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
-		return result;
 	}
 
 	@Override
 	public long readUnsignedInt() {
-		return readInt() & 0xFFFFFFFFL;
+		try {
+			return dataInput.readInt() & 0xFFFFFFFFL;
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
 	public long readLong() {
-		byte[] buffer = new byte[8];
-		readBytesFully(buffer);
-		long result = 0;
-		for (byte b : buffer) {
-			result <<= 8;
-			result |= b & 0xFF;
+		try {
+			return dataInput.readLong();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
-		return result;
 	}
 
 	@Override
 	public short readShort() {
-		short b1 = readUnsignedByte();
-		short b2 = readUnsignedByte();
-		return (short) ((b1 << 8) + b2);
+		try {
+			return dataInput.readShort();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
 	public int readUnsignedShort() {
-		short b1 = readUnsignedByte();
-		short b2 = readUnsignedByte();
-		return ((b1 << 8) + (b2 << 0));
+		try {
+			return dataInput.readUnsignedShort();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
 	public double readDouble() {
-		return Double.longBitsToDouble(readLong());
+		try {
+			return dataInput.readDouble();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
 	public float readFloat() {
-		return Float.intBitsToFloat(readInt());
+		try {
+			return dataInput.readFloat();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
 	public String readUtf8String() {
 		try {
-			String string = DataInputStream.readUTF(new DataInputStream(is));
-			position += string.getBytes().length;
-			return string;
+			return dataInput.readUTF();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -144,12 +156,16 @@ public class ClassReaderImpl implements ClassReader {
 
 	@Override
 	public short readUnsignedByte() {
-		return (short) (readByte() & 0xFF);
+		try {
+			return (short) dataInput.readUnsignedByte();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
-	public int getPosition() {
-		return position;
+	public long getPosition() {
+		return countingInputStream.getCount();
 	}
 
 }

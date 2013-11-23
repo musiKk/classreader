@@ -138,6 +138,6 @@ public interface ClassReader {
 	 *
 	 * @return the current position
 	 */
-	int getPosition();
+	long getPosition();
 
 }
