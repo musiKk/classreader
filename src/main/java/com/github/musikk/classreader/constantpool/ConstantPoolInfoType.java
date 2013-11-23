@@ -99,4 +99,8 @@ public enum ConstantPoolInfoType {
 		}
 	}
 
+	public boolean isDoubleSized() {
+		return this == LONG || this == DOUBLE;
+	}
+
 }

@@ -42,14 +42,14 @@ import com.github.musikk.classreader.ClassReaderContext;
 
 public class ConstantPool implements Iterable<ConstantPoolInfo> {
 
-	private final List<ConstantPoolInfo> constantPoolInfos;
+	private final SortedMap<Integer, ConstantPoolInfo> constantPoolInfos;
 
 	/**
 	 * Maps types to the infos that are available for the type.
 	 */
 	private final Map<ConstantPoolInfoType, SortedMap<Integer, ConstantPoolInfo>> constantPoolInfosByType;
 
-	private ConstantPool(List<ConstantPoolInfo> constantPoolInfos,
+	private ConstantPool(SortedMap<Integer, ConstantPoolInfo> constantPoolInfos,
 			Map<ConstantPoolInfoType, SortedMap<Integer, ConstantPoolInfo>> constantPoolInfosByType) {
 		this.constantPoolInfos = constantPoolInfos;
 		this.constantPoolInfosByType = constantPoolInfosByType;
@@ -195,7 +195,7 @@ public class ConstantPool implements Iterable<ConstantPoolInfo> {
 	public static ConstantPool createConstantPool(ClassReaderContext ctxt) {
 		ClassReader reader = ctxt.getClassReader();
 		int constantPoolCount = reader.readUnsignedShort();
-		List<ConstantPoolInfo> constantPoolInfos = new ArrayList<>(constantPoolCount);
+		SortedMap<Integer, ConstantPoolInfo> constantPoolInfos = new TreeMap<>();
 		Map<ConstantPoolInfoType, SortedMap<Integer, ConstantPoolInfo>> constantPoolInfosByType = new HashMap<>();
 		for (ConstantPoolInfoType t : ConstantPoolInfoType.values()) {
 			constantPoolInfosByType.put(t, new TreeMap<Integer, ConstantPoolInfo>());
@@ -207,8 +207,11 @@ public class ConstantPool implements Iterable<ConstantPoolInfo> {
 
 			ConstantPoolInfo cpi = cpit.create(ctxt);
 			cpi.setTag(tag);
-			constantPoolInfos.add(i, cpi);
+			constantPoolInfos.put(i, cpi);
 			constantPoolInfosByType.get(cpit).put(i + 1, cpi);
+			if (cpit.isDoubleSized()) {
+				i++;
+			}
 		}
 
 		ConstantPool constantPool = new ConstantPool(constantPoolInfos, constantPoolInfosByType);
@@ -234,7 +237,7 @@ public class ConstantPool implements Iterable<ConstantPoolInfo> {
 
 		@Override
 		public boolean hasNext() {
-			return currentIndex < constantPoolInfos.size();
+			return currentIndex <= constantPoolInfos.size();
 		}
 
 		@Override
