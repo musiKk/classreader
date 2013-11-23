@@ -31,7 +31,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.github.musikk.classreader.ClassReader;
-import com.github.musikk.classreader.ClassReaderContext;
 
 public abstract class StackMapFrame {
 
@@ -45,11 +44,11 @@ public abstract class StackMapFrame {
 		return frameType;
 	}
 
-	static StackMapFrame getStackMapFrame(ClassReaderContext ctxt) {
-		int frameType = ctxt.getClassReader().readUnsignedByte();
+	static StackMapFrame getStackMapFrame(ClassReader reader) {
+		int frameType = reader.readUnsignedByte();
 		Type type = Type.getTypeFromFrameType(frameType);
 
-		return type.create(ctxt, frameType);
+		return type.create(reader, frameType);
 	}
 
 	public static class SameFrame extends StackMapFrame {
@@ -67,8 +66,8 @@ public abstract class StackMapFrame {
 		public VerificationTypeInfo getStack() {
 			return stack;
 		}
-		static SameLocals1StackItemFrame getSameLocals1StackItemFrame(ClassReaderContext ctxt, int frameType) {
-			return new SameLocals1StackItemFrame(frameType, VerificationTypeInfo.getVerificationTypeInfo(ctxt));
+		static SameLocals1StackItemFrame getSameLocals1StackItemFrame(ClassReader reader, int frameType) {
+			return new SameLocals1StackItemFrame(frameType, VerificationTypeInfo.getVerificationTypeInfo(reader));
 		}
 	}
 
@@ -86,9 +85,9 @@ public abstract class StackMapFrame {
 		public VerificationTypeInfo getStack() {
 			return stack;
 		}
-		static SameLocals1StackItemFrameExtended getSameLocals1StackItemFrameExtended(ClassReaderContext ctxt, int frameType) {
-			int offsetDelta = ctxt.getClassReader().readUnsignedShort();
-			return new SameLocals1StackItemFrameExtended(frameType, offsetDelta, VerificationTypeInfo.getVerificationTypeInfo(ctxt));
+		static SameLocals1StackItemFrameExtended getSameLocals1StackItemFrameExtended(ClassReader reader, int frameType) {
+			int offsetDelta = reader.readUnsignedShort();
+			return new SameLocals1StackItemFrameExtended(frameType, offsetDelta, VerificationTypeInfo.getVerificationTypeInfo(reader));
 		}
 	}
 
@@ -101,8 +100,8 @@ public abstract class StackMapFrame {
 		public int getOffsetDelta() {
 			return offsetDelta;
 		}
-		static ChopFrame getChopFrame(ClassReaderContext ctxt, int frameType) {
-			int offsetDelta = ctxt.getClassReader().readUnsignedShort();
+		static ChopFrame getChopFrame(ClassReader reader, int frameType) {
+			int offsetDelta = reader.readUnsignedShort();
 			return new ChopFrame(frameType, offsetDelta);
 		}
 	}
@@ -116,8 +115,8 @@ public abstract class StackMapFrame {
 		public int getOffsetDelta() {
 			return offsetDelta;
 		}
-		static SameFrameExtended getSameFrameExtended(ClassReaderContext ctxt, int frameType) {
-			int offsetDelta = ctxt.getClassReader().readUnsignedShort();
+		static SameFrameExtended getSameFrameExtended(ClassReader reader, int frameType) {
+			int offsetDelta = reader.readUnsignedShort();
 			return new SameFrameExtended(frameType, offsetDelta);
 		}
 	}
@@ -136,13 +135,13 @@ public abstract class StackMapFrame {
 		public List<VerificationTypeInfo> getLocals() {
 			return Collections.unmodifiableList(locals);
 		}
-		static AppendFrame getAppendFrame(ClassReaderContext ctxt, int frameType) {
-			int offsetDelta = ctxt.getClassReader().readUnsignedShort();
+		static AppendFrame getAppendFrame(ClassReader reader, int frameType) {
+			int offsetDelta = reader.readUnsignedShort();
 			int numLocals = frameType - 251;
 
 			List<VerificationTypeInfo> locals = new ArrayList<>(numLocals);
 			for (int i = 0; i < numLocals; i++) {
-				locals.add(VerificationTypeInfo.getVerificationTypeInfo(ctxt));
+				locals.add(VerificationTypeInfo.getVerificationTypeInfo(reader));
 			}
 
 			return new AppendFrame(frameType, offsetDelta, locals);
@@ -168,22 +167,20 @@ public abstract class StackMapFrame {
 		public List<VerificationTypeInfo> getStack() {
 			return Collections.unmodifiableList(stack);
 		}
-		static FullFrame getFullFrame(ClassReaderContext ctxt, int frameType) {
-			ClassReader reader = ctxt.getClassReader();
-
+		static FullFrame getFullFrame(ClassReader reader, int frameType) {
 			int offsetDelta = reader.readUnsignedShort();
 			int numLocals = reader.readUnsignedShort();
 
 			List<VerificationTypeInfo> locals = new ArrayList<>(numLocals);
 			for (int i = 0; i < numLocals; i++) {
-				locals.add(VerificationTypeInfo.getVerificationTypeInfo(ctxt));
+				locals.add(VerificationTypeInfo.getVerificationTypeInfo(reader));
 			}
 
 			int numStackItems = reader.readUnsignedShort();
 
 			List<VerificationTypeInfo> stack = new ArrayList<>(numStackItems);
 			for (int i = 0; i < numStackItems; i++) {
-				stack.add(VerificationTypeInfo.getVerificationTypeInfo(ctxt));
+				stack.add(VerificationTypeInfo.getVerificationTypeInfo(reader));
 			}
 
 			return new FullFrame(frameType, offsetDelta, locals, stack);
@@ -198,9 +195,7 @@ public abstract class StackMapFrame {
 		public int getTag() {
 			return tag;
 		}
-		static VerificationTypeInfo getVerificationTypeInfo(ClassReaderContext ctxt) {
-			ClassReader reader = ctxt.getClassReader();
-
+		static VerificationTypeInfo getVerificationTypeInfo(ClassReader reader) {
 			int tag = reader.readUnsignedByte();
 			switch (tag) {
 			case 0:
@@ -321,22 +316,22 @@ public abstract class StackMapFrame {
 			throw new IllegalArgumentException("No stack map frame for frame type " + frameType + " found.");
 		}
 
-		StackMapFrame create(ClassReaderContext ctxt, int frameType) {
+		StackMapFrame create(ClassReader reader, int frameType) {
 			switch (this) {
 			case APPEND_FRAME:
-				return AppendFrame.getAppendFrame(ctxt, frameType);
+				return AppendFrame.getAppendFrame(reader, frameType);
 			case CHOP_FRAME:
-				return ChopFrame.getChopFrame(ctxt, frameType);
+				return ChopFrame.getChopFrame(reader, frameType);
 			case FULL_FRAME:
-				return FullFrame.getFullFrame(ctxt, frameType);
+				return FullFrame.getFullFrame(reader, frameType);
 			case SAME_FRAME:
 				return new SameFrame(frameType);
 			case SAME_FRAME_EXTENDED:
-				return SameFrameExtended.getSameFrameExtended(ctxt, frameType);
+				return SameFrameExtended.getSameFrameExtended(reader, frameType);
 			case SAME_LOCALS_1_STACK_ITEM_FRAME:
-				return SameLocals1StackItemFrame.getSameLocals1StackItemFrame(ctxt, frameType);
+				return SameLocals1StackItemFrame.getSameLocals1StackItemFrame(reader, frameType);
 			case SAME_LOCALS_1_STACK_ITEM_FRAME_EXTENDED:
-				return SameLocals1StackItemFrameExtended.getSameLocals1StackItemFrameExtended(ctxt, frameType);
+				return SameLocals1StackItemFrameExtended.getSameLocals1StackItemFrameExtended(reader, frameType);
 			default:
 				throw new IllegalStateException();
 			}

@@ -26,33 +26,61 @@
  */
 package com.github.musikk.classreader.attributes;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
+import com.github.musikk.classreader.ClassReader;
 import com.github.musikk.classreader.ClassReaderContext;
+import com.github.musikk.classreader.ClassReaderImpl;
+import com.google.common.collect.Iterators;
 
-public class StackMapTable extends AttributeInfo {
+public class StackMapTable extends AttributeInfo implements Iterable<StackMapFrame> {
+
+	private boolean entriesAreParsed;
+	private final byte[] tableBytes;
+	private final int numberOfEntries;
 
 	private final List<StackMapFrame> entries;
 
-	public StackMapTable(List<StackMapFrame> entries) {
-		this.entries = entries;
+	public StackMapTable(byte[] tableBytes, int numberOfEntries) {
+		this.tableBytes = tableBytes;
+		this.numberOfEntries = numberOfEntries;
+		this.entries = new ArrayList<>(numberOfEntries);
 	}
 
 	public List<StackMapFrame> getEntries() {
+		ensureParsedEntries();
 		return Collections.unmodifiableList(entries);
 	}
 
-	static StackMapTable getStackMapTable(ClassReaderContext ctxt) {
-		int numberOfEntries = ctxt.getClassReader().readUnsignedShort();
-
-		List<StackMapFrame> entries = new ArrayList<>(numberOfEntries);
-		for (int i = 0; i < numberOfEntries; i++) {
-			entries.add(StackMapFrame.getStackMapFrame(ctxt));
+	private void ensureParsedEntries() {
+		if (!entriesAreParsed) {
+			ClassReader reader = new ClassReaderImpl(new ByteArrayInputStream(tableBytes));
+			// constant pool is not actually required...
+			for (int i = 0; i < numberOfEntries; i++) {
+				entries.add(StackMapFrame.getStackMapFrame(reader));
+			}
+			entriesAreParsed = true;
 		}
+	}
 
-		return new StackMapTable(entries);
+	@Override
+	public Iterator<StackMapFrame> iterator() {
+		ensureParsedEntries();
+		return Iterators.unmodifiableIterator(entries.iterator());
+	}
+
+	static StackMapTable getStackMapTable(ClassReaderContext ctxt, int attributeLength) {
+		ClassReader reder = ctxt.getClassReader();
+
+		int numberOfEntries = reder.readUnsignedShort();
+		byte[] tableBytes = new byte[attributeLength - 2];
+		reder.readBytesFully(tableBytes);
+
+		return new StackMapTable(tableBytes, numberOfEntries);
 	}
 
 }
