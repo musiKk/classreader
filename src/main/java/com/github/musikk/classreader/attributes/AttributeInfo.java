@@ -73,12 +73,8 @@ public class AttributeInfo {
 		AttributeInfo attributeInfo;
 		if (attributeType != null) {
 			attributeInfo = attributeType.create(ctxt, attributeLength);
-			// TODO remove once all attribute types are implemented
-			if (attributeInfo == null) {
-				reader.readBytesFully(new byte[attributeLength]); // just skip it
-				attributeInfo = new AttributeInfo();
-			}
 		} else {
+			// unknown attribute
 			attributeInfo = new AttributeInfo();
 			byte[] bytes = new byte[attributeLength];
 			reader.readBytesFully(bytes);
