@@ -26,41 +26,53 @@
  */
 package com.github.musikk.classreader.attributes;
 
+import java.io.ByteArrayInputStream;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import com.github.musikk.classreader.ClassReader;
 import com.github.musikk.classreader.ClassReaderContext;
+import com.github.musikk.classreader.ClassReaderImpl;
 import com.github.musikk.classreader.instructions.Instruction;
 
 public class Code {
 
-	private final SortedMap<Integer, Instruction> instructions;
+	private boolean instructionsAreParsed;
 
-	private Code(SortedMap<Integer, Instruction> instructions) {
-		this.instructions = instructions;
+	private final byte[] codeBytes;
+	private final SortedMap<Integer, Instruction> instructions = new TreeMap<>();
+
+	private Code(byte[] codeBytes) {
+		this.codeBytes = codeBytes;
 	}
 
 	public SortedMap<Integer, Instruction> getInstructions() {
+		if (!instructionsAreParsed) {
+			readInstructions();
+			instructionsAreParsed = true;
+		}
 		return instructions;
 	}
 
-	protected static Code getCode(ClassReaderContext ctxt) {
-		ClassReader reader = ctxt.getClassReader();
-
-		SortedMap<Integer, Instruction> instructions = new TreeMap<>();
-
+	private void readInstructions() {
 		int currentByte = 0;
-		int codeLength = reader.readInt();
-
-		while (currentByte < codeLength) {
+		ClassReader reader = new ClassReaderImpl(new ByteArrayInputStream(codeBytes));
+		while (currentByte < codeBytes.length) {
 			Instruction instruction = Instruction.getNextInstruction(reader, currentByte);
 
 			int instructionSize = instruction.getInstructionSize();
 			instructions.put(currentByte, instruction);
 			currentByte += instructionSize;
 		}
+	}
 
-		return new Code(instructions);
+	protected static Code getCode(ClassReaderContext ctxt) {
+		ClassReader reader = ctxt.getClassReader();
+
+		int codeLength = reader.readInt();
+		byte[] codeBytes = new byte[codeLength];
+		reader.readBytesFully(codeBytes);
+
+		return new Code(codeBytes);
 	}
 }
