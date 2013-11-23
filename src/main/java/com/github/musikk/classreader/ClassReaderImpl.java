@@ -121,7 +121,12 @@ public class ClassReaderImpl implements ClassReader {
 	@Override
 	public int readUnsignedShort() {
 		try {
-			return dataInput.readUnsignedShort();
+			int i1 = countingInputStream.read();
+			int i2 = countingInputStream.read();
+			if (i2 == -1) {
+				throw new RuntimeException("EOF");
+			}
+			return (i1 << 8) | i2;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
