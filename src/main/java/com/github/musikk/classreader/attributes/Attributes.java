@@ -28,12 +28,14 @@ package com.github.musikk.classreader.attributes;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import com.github.musikk.classreader.ClassReader;
 import com.github.musikk.classreader.ClassReaderContext;
+import com.google.common.collect.Iterators;
 
-public class Attributes {
+public class Attributes implements Iterable<AttributeInfo> {
 
 	private final List<AttributeInfo> attributeInfos;
 
@@ -55,6 +57,11 @@ public class Attributes {
 		}
 		return new Attributes(attributeInfos);
 
+	}
+
+	@Override
+	public Iterator<AttributeInfo> iterator() {
+		return Iterators.unmodifiableIterator(attributeInfos.iterator());
 	}
 
 }
