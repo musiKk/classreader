@@ -45,6 +45,14 @@ public enum ConstantPoolInfoType {
 	METHOD_TYPE(16),
 	INVOKE_DYNAMIC(18);
 
+	private static final ConstantPoolInfoType[] TAG_MAPPING = new ConstantPoolInfoType[18];
+
+	static {
+		for (ConstantPoolInfoType t : values()) {
+			TAG_MAPPING[t.value - 1] = t;
+		}
+	}
+
 	private byte value;
 
 	private ConstantPoolInfoType(int value) {
@@ -56,12 +64,10 @@ public enum ConstantPoolInfoType {
 	}
 
 	public static ConstantPoolInfoType getByTag(byte tag) {
-		for (ConstantPoolInfoType t : values()) {
-			if (t.value == tag) {
-				return t;
-			}
+		if (tag < 1 || tag > 18) {
+			throw new IllegalArgumentException("unknown tag " + (tag & 0xFF));
 		}
-		throw new IllegalArgumentException("unknown tag " + (tag & 0xFF));
+		return TAG_MAPPING[tag - 1];
 	}
 
 	public ConstantPoolInfo create(ClassReaderContext ctxt) {
