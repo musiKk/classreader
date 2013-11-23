@@ -28,12 +28,14 @@ package com.github.musikk.classreader.attributes;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import com.github.musikk.classreader.ClassReader;
 import com.github.musikk.classreader.ClassReaderContext;
+import com.google.common.collect.Iterators;
 
-public class ExceptionTable {
+public class ExceptionTable implements Iterable<ExceptionTableEntry> {
 
 	private final List<ExceptionTableEntry> exceptionTableEntries;
 
@@ -43,6 +45,11 @@ public class ExceptionTable {
 
 	public List<ExceptionTableEntry> getExceptionTableEntries() {
 		return Collections.unmodifiableList(exceptionTableEntries);
+	}
+
+	@Override
+	public Iterator<ExceptionTableEntry> iterator() {
+		return Iterators.unmodifiableIterator(exceptionTableEntries.iterator());
 	}
 
 	protected static ExceptionTable getExceptionTable(ClassReaderContext ctxt) {
