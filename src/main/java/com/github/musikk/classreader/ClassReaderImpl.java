@@ -37,8 +37,8 @@ import com.google.common.io.CountingInputStream;
 
 public class ClassReaderImpl implements ClassReader {
 
-	private final CountingInputStream countingInputStream;
-	private final DataInput dataInput;
+	private CountingInputStream countingInputStream;
+	private DataInput dataInput;
 
 	public ClassReaderImpl(InputStream is) {
 		try {
@@ -171,6 +171,18 @@ public class ClassReaderImpl implements ClassReader {
 	@Override
 	public long getPosition() {
 		return countingInputStream.getCount();
+	}
+
+	@Override
+	public void close() {
+		/*
+		 * Since the streams are only filters ultimately working on a byte array
+		 * on the heap, no actual close operation has to be invoked. The
+		 * references are set to null so the byte array may be garbage
+		 * collected.
+		 */
+		countingInputStream = null;
+		dataInput = null;
 	}
 
 }

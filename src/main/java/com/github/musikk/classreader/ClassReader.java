@@ -140,4 +140,6 @@ public interface ClassReader {
 	 */
 	long getPosition();
 
+	void close();
+
 }

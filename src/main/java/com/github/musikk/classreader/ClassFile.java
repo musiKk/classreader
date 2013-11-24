@@ -134,6 +134,7 @@ public class ClassFile {
 		readFields(ctxt);
 		readMethods(ctxt);
 		readAttributes(ctxt);
+		ctxt.getClassReader().close();
 	}
 
 	private void readAttributes(ClassReaderContext ctxt) {
