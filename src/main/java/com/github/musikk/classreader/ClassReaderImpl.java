@@ -33,11 +33,8 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.google.common.io.CountingInputStream;
-
 public class ClassReaderImpl implements ClassReader {
 
-	private CountingInputStream countingInputStream;
 	private DataInput dataInput;
 
 	public ClassReaderImpl(InputStream is) {
@@ -48,8 +45,7 @@ public class ClassReaderImpl implements ClassReader {
 			while ((read = is.read(buf)) != -1) {
 				baos.write(buf, 0, read);
 			}
-			countingInputStream = new CountingInputStream(new ByteArrayInputStream(baos.toByteArray()));
-			dataInput = new DataInputStream(countingInputStream);
+			dataInput = new DataInputStream(new ByteArrayInputStream(baos.toByteArray()));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -121,11 +117,8 @@ public class ClassReaderImpl implements ClassReader {
 	@Override
 	public int readUnsignedShort() {
 		try {
-			int i1 = countingInputStream.read();
-			int i2 = countingInputStream.read();
-			if (i2 == -1) {
-				throw new RuntimeException("EOF");
-			}
+			int i1 = dataInput.readByte() & 0xFF;
+			int i2 = dataInput.readByte() & 0xFF;
 			return (i1 << 8) | i2;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -169,19 +162,12 @@ public class ClassReaderImpl implements ClassReader {
 	}
 
 	@Override
-	public long getPosition() {
-		return countingInputStream.getCount();
-	}
-
-	@Override
 	public void close() {
 		/*
-		 * Since the streams are only filters ultimately working on a byte array
+		 * Since the stream is only a filter ultimately working on a byte array
 		 * on the heap, no actual close operation has to be invoked. The
-		 * references are set to null so the byte array may be garbage
-		 * collected.
+		 * reference is set to null so the byte array may be garbage collected.
 		 */
-		countingInputStream = null;
 		dataInput = null;
 	}
 

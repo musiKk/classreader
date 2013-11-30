@@ -133,13 +133,6 @@ public interface ClassReader {
 	 */
 	String readUtf8String();
 
-	/**
-	 * The position in the stream this {@code ClassReader} is currently at.
-	 *
-	 * @return the current position
-	 */
-	long getPosition();
-
 	void close();
 
 }
