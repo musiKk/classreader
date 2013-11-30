@@ -27,52 +27,40 @@
 package com.github.musikk.classreader;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 public class EagerClassFileJar extends ClassFileCollection {
 
 	private final File jarFile;
-
 	private final Map<String, ClassFile> zipContent;
 
 	public EagerClassFileJar(File jarFile) {
 		this.jarFile = jarFile;
-		this.zipContent = new HashMap<String, ClassFile>();
+		this.zipContent = new HashMap<>();
 		parseContents();
 	}
 
 	private void parseContents() {
-
-		try (ZipFile zipFile = new ZipFile(jarFile)) {
-			Enumeration<? extends ZipEntry> entries = zipFile.entries();
-			while (entries.hasMoreElements()) {
-
-				ZipEntry entry = entries.nextElement();
+		try (InputStream in = new FileInputStream(jarFile); ZipInputStream zipIn = new ZipInputStream(in)) {
+			ZipEntry entry = null;
+			while ((entry = zipIn.getNextEntry()) != null) {
 				String entryName = entry.getName();
 				if (!isClassEntry(entryName)) {
 					continue;
 				}
-
-				try (InputStream is = zipFile.getInputStream(entry)) {
-					ClassFile cf = new ClassFile(is);
-					zipContent.put(entryName, cf);
-				} catch (RuntimeException e) {
-					throw new RuntimeException("error loading class '"
-							+ entryName + "'", e);
-				}
+				zipContent.put(entryName, new ClassFile(zipIn));
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-
 	}
 
 	private static boolean isClassEntry(String entryName) {
